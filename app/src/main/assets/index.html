@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no">
+<meta name="theme-color" content="#0b1220">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="热管理学习">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='110' fill='%232563eb'/%3E%3Ctext x='50%25' y='62%25' font-size='300' text-anchor='middle' dominant-baseline='middle'%3E%F0%9F%94%A5%3C/text%3E%3C/svg%3E">
+<title>航空发动机热管理 · 学习系统</title>
+<style>
+:root{
+  --bg:#0b1220; --bg2:#121b2e; --card:#172238; --card2:#1d2b46;
+  --line:#26344f; --txt:#e7edf6; --sub:#9fb0c9; --mut:#6b7c98;
+  --blue:#3b82f6; --blue2:#2563eb; --orange:#f97316; --green:#22c55e;
+  --amber:#f59e0b; --red:#ef4444; --purple:#a855f7;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
+  background:var(--bg); color:var(--txt);
+  -webkit-font-smoothing:antialiased;
+}
+.app{max-width:520px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column;background:var(--bg);
+  padding-bottom:74px;padding-top:env(safe-area-inset-top)}
+header.top{
+  position:sticky;top:0;z-index:20;background:linear-gradient(135deg,#0e1830,#13243f);
+  padding:14px 16px 12px;border-bottom:1px solid var(--line);
+}
+header.top .h1{font-size:17px;font-weight:700;letter-spacing:.3px;display:flex;align-items:center;gap:8px}
+header.top .h1 .fl{font-size:20px}
+header.top .sub{font-size:12px;color:var(--sub);margin-top:3px}
+main{flex:1;padding:14px 14px 4px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:12px}
+.card.tap{cursor:pointer;transition:.15s}
+.card.tap:active{transform:scale(.985);background:var(--card2)}
+.row{display:flex;align-items:center;gap:10px}
+.between{justify-content:space-between}
+.muted{color:var(--mut)} .sub2{color:var(--sub)}
+.tiny{font-size:11px} .sm{font-size:13px} .md{font-size:15px} .lg{font-size:18px;font-weight:700}
+.tag{display:inline-block;font-size:11px;padding:2px 8px;border-radius:999px;border:1px solid var(--line);color:var(--sub);background:#0e1626}
+.tag.video{color:#fca5a5;border-color:#7f1d1d;background:#2a1216}
+.tag.book{color:#93c5fd;border-color:#1e3a8a;background:#0f1d33}
+.tag.paper{color:#fcd34d;border-color:#854d0e;background:#271d07}
+.tag.tool{color:#86efac;border-color:#14532d;background:#0c2114}
+.tag.standard{color:#c4b5fd;border-color:#4c1d95;background:#1a1230}
+.tag.software{color:#67e8f9;border-color:#155e75;background:#082330}
+.tag.exercise{color:#fdba74;border-color:#9a3412;background:#241207}
+.ring{position:relative;width:120px;height:120px}
+.ring svg{transform:rotate(-90deg)}
+.ring .pct{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px}
+.stat .n{font-size:22px;font-weight:800}
+.stat .l{font-size:11px;color:var(--sub);margin-top:2px}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:2px 0 8px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:0 0 auto;font-size:12px;padding:6px 13px;border-radius:999px;border:1px solid var(--line);color:var(--sub);background:#0e1626;cursor:pointer}
+.chip.on{background:var(--blue2);color:#fff;border-color:var(--blue2)}
+.material{display:flex;gap:10px;align-items:flex-start;padding:11px 0;border-bottom:1px solid var(--line)}
+.material:last-child{border-bottom:0}
+.material .ic{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px;background:#0e1626;border:1px solid var(--line);flex:0 0 auto}
+.btn{display:inline-block;font-size:12px;padding:5px 11px;border-radius:9px;background:var(--blue2);color:#fff;text-decoration:none;border:0;cursor:pointer}
+.btn.out{background:#0e1626;border:1px solid var(--line);color:var(--sub)}
+.kanban{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.kcol{background:#0e1626;border:1px solid var(--line);border-radius:12px;padding:8px;min-height:120px}
+.kcol h4{margin:0 0 8px;font-size:12px;color:var(--sub);text-align:center}
+.kitem{background:var(--card);border:1px solid var(--line);border-radius:9px;padding:8px;margin-bottom:7px;font-size:12px;cursor:pointer}
+.kitem .d{font-size:10px;color:var(--mut);margin-top:3px}
+.seg{display:flex;background:#0e1626;border:1px solid var(--line);border-radius:10px;overflow:hidden;margin-bottom:12px}
+.seg button{flex:1;background:none;border:0;color:var(--sub);padding:9px 0;font-size:13px;cursor:pointer}
+.seg button.on{background:var(--blue2);color:#fff;font-weight:600}
+.detail{margin-top:10px;padding-top:10px;border-top:1px dashed var(--line);font-size:13px;line-height:1.65;color:var(--txt)}
+.detail .k{color:var(--sub);font-size:11px;margin:8px 0 2px}
+.links a{display:inline-block;margin:3px 6px 3px 0}
+.empty{text-align:center;color:var(--mut);padding:40px 16px;font-size:14px}
+.datebar{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.datebar input{background:#0e1626;border:1px solid var(--line);color:var(--txt);border-radius:9px;padding:6px 10px;font-size:13px}
+footer.tabs{position:fixed;bottom:0;left:0;right:0;z-index:30;display:flex;background:#0c1424;border-top:1px solid var(--line);
+  padding-bottom:env(safe-area-inset-bottom);max-width:520px;margin:0 auto}
+footer.tabs button{flex:1;background:none;border:0;color:var(--mut);padding:9px 0 7px;font-size:11px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px}
+footer.tabs button .i{font-size:18px;line-height:1}
+footer.tabs button.on{color:#fff}
+footer.tabs button.on .i{filter:drop-shadow(0 0 6px var(--blue))}
+.sec-title{font-size:14px;font-weight:700;margin:4px 2px 10px;display:flex;align-items:center;gap:7px}
+.sec-title .bar{width:4px;height:15px;background:var(--orange);border-radius:2px}
+.hidden{display:none}
+a.ext{color:var(--blue);text-decoration:none}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block}
+.barmini{height:6px;border-radius:4px;background:#0e1626;overflow:hidden;margin-top:6px}
+.barmini > i{display:block;height:100%;background:linear-gradient(90deg,var(--blue),var(--orange))}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="top">
+    <div class="h1"><span class="fl">🔥</span><span>航空发动机热管理</span></div>
+    <div class="sub" id="subline">学习驾驶舱</div>
+    <div class="tiny" id="syncbadge" style="margin-top:2px;color:var(--mut)">○ 离线快照（只读）</div>
+  </header>
+  <main id="view"></main>
+</div>
+<footer class="tabs" id="tabs">
+  <button data-tab="home" class="on"><span class="i">📊</span>驾驶舱</button>
+  <button data-tab="today"><span class="i">🎯</span>今日</button>
+  <button data-tab="tasks"><span class="i">🗂️</span>任务</button>
+  <button data-tab="library"><span class="i">📚</span>资料库</button>
+  <button data-tab="weeks"><span class="i">🗓️</span>周计划</button>
+</footer>
+
+<script>
+const DATA = {"generatedAt": "2026-09-04 16:51", "weeks": [{"id": "recvuaSu5lxPzq", "week": "1", "theme": "热力学与传热学基础", "period": "{'id': 'recvuaNsOkHop5'}", "goal": "掌握开口系统能量方程、三种换热方式的定量计算，以及换热器 ε-NTU 法；能建立热阻网络做多层壁换热分析", "prereq": "", "standard": "看到任意一条热流路径都能写出能量方程并算出热流与温度；ε-NTU 和 LMTD 两种方法算出的结果一致", "selftest": "", "picked": "", "exercise": "① ε-NTU 与 LMTD 各做 2 道换热器计算；② 推导圆筒壁径向导热热阻；③ 用代码搭一个热阻网络/换热器计算模板", "remark": ""}, {"id": "recvuaSu5lZONX", "week": "2", "theme": "航空发动机总体热环境", "period": "{'id': 'recvuaNsOkHop5'}", "goal": "建立发动机各部件的热负荷概念，理解温度分布与热流路径，知道每个部件为什么要冷却、用什么冷却", "prereq": "", "standard": "能不看资料画出热源-热沉流向图，并解释导向器比转子叶片更难冷却的原因", "selftest": "", "picked": "", "exercise": "① 整理 7 个部件的温度范围-热负荷机制-冷却方式对照表；② 画整机热源-热沉能量流向图；③ 估算 TIT 每升高 100K 的金属温升", "remark": ""}, {"id": "recvuaSu5lXLYm", "week": "3", "theme": "二次空气系统", "period": "{'id': 'recvuaNsOkHop5'}", "goal": "掌握引气来源与位置选择、二次空气分配、封严与间隙控制原理，能算预旋喷嘴出口相对总温", "prereq": "", "standard": "能说清高压涡轮为什么从压气机末级引气、低压涡轮从哪引，以及刷式封严相对篦齿的优劣", "selftest": "", "picked": "", "exercise": "① 预旋比 0.8、引气 700K 求出口相对总温；② 按 60/20/10/10 占比分配总引气量；③ 比较不同级引气的压力损失与性能代价", "remark": ""}, {"id": "recvuaSu5lAeik", "week": "4", "theme": "涡轮冷却技术", "period": "{'id': 'recvuaNsOkHop5'}", "goal": "掌握内部对流、冲击、气膜、发散与复合冷却的换热机理，能算冷却效率与气膜效率并判断冷却方案是否够用", "prereq": "", "standard": "看到任何冷却结构都能说出它的换热机理、典型效率区间，以及它是怎么把金属温度压下来的", "selftest": "", "picked": "", "exercise": "① 推导 η=(Tg-Tm)/(Tg-Tc) 并用 Tg=1700K/Tc=800K/Tm=1200K 求所需效率；② 用 Bi 数判断叶片能否按等温体处理；③ 估算内部+气膜复合冷却的综合效率", "remark": ""}, {"id": "recvuaSu5lSfwc", "week": "5", "theme": "滑油系统", "period": "{'id': 'recvuaNsOkHop5'}", "goal": "掌握滑油系统组成、轴承与齿轮热生成计算、散热回路设计与除气原理，能独立完成滑油回路热平衡", "prereq": "", "standard": "能独立列写并求解 Q_bearing+Q_gear = ṁ·cp·ΔT = Q_ACOC+Q_FCOC，并说清除气的必要性", "selftest": "", "picked": "", "exercise": "① 轴承 5kW、滑油 30L/min 求温升；② 设计 ACOC：滑油 440K→370K、空气 0.5kg/s/300K，求换热量与空气出口温度；③ 按散热与润滑需求取大值确定滑油流量", "remark": ""}, {"id": "recvuaSu5lp2WL", "week": "6", "theme": "燃油系统热管理", "period": "{'id': 'recvuaNsOkHop5'}", "goal": "理解燃油作为最终热沉的原理与限制，掌握焦化机理与热沉匹配分析，能判断什么时候热沉不够用", "prereq": "", "standard": "看到一组工况参数就能算出热沉供给与需求、判断够不够，并给出回油循环或增大 ACOC 的取舍建议", "selftest": "", "picked": "", "exercise": "① 燃油 0.3kg/s、cp=2.0、288K→430K 求热沉能力；② 分析高空巡航热沉为何不足；③ 画燃油温度沿飞行剖面草图并标出结焦风险区", "remark": ""}, {"id": "recvuaSu5lAxi8", "week": "7", "theme": "多系统热平衡与优化", "period": "{'id': 'recvuaNsOkHop5'}", "goal": "把三大系统耦合起来建立整机热管理模型，学会目标函数设定、参数敏感性分析与控制策略设计", "prereq": "", "standard": "能跑通起飞/巡航/慢车/超声速四个工况的热平衡，说清性能损失、寿命、重量三者的权衡点", "selftest": "", "picked": "", "exercise": "① 画整机热管理耦合框图并标出所有换热路径；② 引气量 +5% 对滑油温度、燃油温度、推力的连锁影响分析；③ 设计滑油超温（>440K）的控制逻辑", "remark": ""}, {"id": "recvuaSu5l3z9s", "week": "8", "theme": "前沿技术与综合案例", "period": "{'id': 'recvuaNsOkHop5'}", "goal": "了解热管理前沿方向，完成一个综合性案例（设计报告或文献综述），把八周所学串成可交付的成果", "prereq": "", "standard": "交付一份完整成果：案例A 需含二次空气分配、滑油散热回路、燃油热沉匹配与仿真模型；案例B 需含技术分类、关键数据与自己的判断", "selftest": "", "picked": "", "exercise": "案例A：涡扇发动机热管理系统设计（120kN/涵道比8/TIT1800K）；案例B：精读 10 篇近 5 年论文写 3000 字综述", "remark": ""}, {"id": "recvtYNQ5nnUxg", "week": "", "theme": "", "period": "", "goal": "", "prereq": "", "standard": "", "selftest": "", "picked": "", "exercise": "", "remark": ""}], "tasks": [{"id": "recvuaSuHfyC68", "date": "2026-09-07T09:00:00.000+08:00", "status": "未开始", "type": "资料研读", "week": "1", "theme": "热力学与传热学基础", "desc": "【资料编号 M01-2】开口系统能量方程 Q̇-Ẇ=ṁ(h_out-h_in)：推导并练熟，套到滑油回路、燃油回路的热平衡上（已知流量与进出口温度求换热量）", "output": "能量方程推导笔记 + 2 个回路热平衡算例", "selfeval": "", "note": "", "estMin": 60.0, "materials": [{"id": "recvuaSskyB0tY", "title": "【书籍】《工程热力学》沈维道 第五版", "fingerprint": "M01-2", "form": "书籍", "subject": "基础理论", "link": "https://book.douban.com/subject_search?search_text=%E5%B7%A5%E7%A8%8B%E7%83%AD%E5%8A%9B%E5%AD%A6%20%E6%B2%88%E7%BB%B4%E9%81%93%20%E7%AC%AC%E4%BA%94%E7%89%88", "video": "", "duration": null, "note": "只读第2章热力学第一定律、第4章开口系统稳流过程。目标是能熟练写出 Q̇-Ẇ=ṁ(h_out-h_in)，并直接套到滑油回路、燃油回路的热平衡计算上。", "status": "processed"}, {"id": "recvudhHnu8h7M", "title": "【视频】中国大学MOOC：传热学 国家精品课（西安交大/清华）", "fingerprint": "M01-7", "form": "视频", "subject": "基础理论", "link": "https://www.icourse163.org/search.htm?search=%E4%BC%A0%E7%83%AD%E5%AD%A6", "video": "https://www.icourse163.org/search.htm?search=%E4%BC%A0%E7%83%AD%E5%AD%A6", "duration": null, "note": "系统视频课，适合教材啃不动时换脑子。按章节看，重点看导热与对流换热两部分。看完回来做第1周习题。", "status": "processed"}, {"id": "recvudhHnuBJQC", "title": "【工具】视频资料存放与上传指引（自述）", "fingerprint": "M00-3", "form": "工具", "subject": "工具与仿真", "link": "http://（见提交说明）", "video": "", "duration": null, "note": "三种存法，按大小选：① 几十 MB 以内的短视频：直接拖到资料记录的「附件/视频文件」字段，飞书内可直接播放；② 大视频/自己录的课：上传到飞书云盘 → 右键分享 → 复制链接 → 粘贴到本表的「视频链接」字段，手机端点开即播；③ 外部平台（B站/YouTube/MOOC）：直接把链接填进「视频链接」。统一原则：大文件一律不进表格附件，只存链接，避免表格变卡。看完记得在「时长(分钟)」填时长，方便排每日任务。", "status": "processed"}]}, {"id": "recvuaSuHfozJA", "date": "2026-09-08T09:00:00.000+08:00", "status": "未开始", "type": "资料研读", "week": "1", "theme": "热力学与传热学基础", "desc": "【资料编号 M01-1】稳态导热：傅里叶定律、平壁与圆筒壁导热，推导圆筒壁径向热阻 R=ln(r2/r1)/(2πkL)，顺带看临界绝热直径与肋片效率", "output": "导热笔记 + 圆筒壁热阻推导", "selfeval": "", "note": "", "estMin": 60.0, "materials": [{"id": "recvuaSskyq6ou", "title": "【书籍】《传热学》杨世铭、陶文铨 第五版", "fingerprint": "M01-1", "form": "书籍", "subject": "基础理论", "link": "https://book.douban.com/subject_search?search_text=%E4%BC%A0%E7%83%AD%E5%AD%A6%20%E6%9D%A8%E4%B8%96%E9%93%AD%20%E9%99%B6%E6%96%87%E9%93%A8%20%E7%AC%AC%E4%BA%94%E7%89%88", "video": "", "duration": null, "note": "核心教材。精读第2章稳态导热（平壁/圆筒壁/临界绝热直径/肋片）、第5章对流换热（Nu关联式、管内与外掠）、第6章辐射换热（黑体/灰体/角系数）。本周只啃这三章，其余章节后续按需回查。", "status": "processed"}]}, {"id": "recvuaSuHfuAa3", "date": "2026-09-09T09:00:00.000+08:00", "status": "未开始", "type": "资料研读", "week": "1", "theme": "热力学与传热学基础", "desc": "【资料编号 M01-1】对流换热：牛顿冷却定律、Nu 数物理意义；管内（Dittus-Boelter、Gnielinski）与外掠关联式的选取与适用范围", "output": "Nu 关联式速查表 + 2 个算例", "selfeval": "", "note": "", "estMin": 60.0, "materials": [{"id": "recvuaSskyq6ou", "title": "【书籍】《传热学》杨世铭、陶文铨 第五版", "fingerprint": "M01-1", "form": "书籍", "subject": "基础理论", "link": "https://book.douban.com/subject_search?search_text=%E4%BC%A0%E7%83%AD%E5%AD%A6%20%E6%9D%A8%E4%B8%96%E9%93%AD%20%E9%99%B6%E6%96%87%E9%93%A8%20%E7%AC%AC%E4%BA%94%E7%89%88", "video": "", "duration": null, "note": "核心教材。精读第2章稳态导热（平壁/圆筒壁/临界绝热直径/肋片）、第5章对流换热（Nu关联式、管内与外掠）、第6章辐射换热（黑体/灰体/角系数）。本周只啃这三章，其余章节后续按需回查。", "status": "processed"}]}, {"id": "recvuaSuHfSNkT", "date": "2026-09-10T09:00:00.000+08:00", "status": "未开始", "type": "习题练习", "week": "1", "theme": "热力学与传热学基础", "desc": "【资料编号 M01-5】辐射换热（黑体/灰体/角系数）+ 换热器计算：同一台换热器分别用 LMTD 与 ε-NTU 求解并对比", "output": "5 道换热器习题 + 两种方法的对比表", "selfeval": "", "note": "", "estMin": 60.0, "materials": [{"id": "recvuaSskyC4RK", "title": "【自编练习】ε-NTU 与 LMTD 换热器计算题 5 道", "fingerprint": "M01-5", "form": "练习", "subject": "基础理论", "link": "http://（自编练习/自建工具，内容见提交说明）", "video": "", "duration": null, "note": "题目：① 管壳式换热器，已知两侧流量与进出口温度，用 LMTD 求面积；② 同题改用 ε-NTU 求解并对比；③ 顺流/逆流 LMTD 对比；④ 一侧相变时 ε-NTU 退化形式；⑤ 换热器效能随 NTU 变化曲线绘制。做完对照教材答案订正。", "status": "processed"}]}, {"id": "recvuaSuHf2hY9", "date": "2026-09-11T09:00:00.000+08:00", "status": "未开始", "type": "复盘整理", "week": "1", "theme": "热力学与传热学基础", "desc": "【资料编号 M01-1】整理本周知识条目入库（导热/对流/辐射/换热器四类）；自测 3 题：圆筒壁热阻推导、滑油散热量计算、ε-NTU 设计 FCOC", "output": "周复盘 + 知识条目 + 自测题答案", "selfeval": "", "note": "", "estMin": 45.0, "materials": [{"id": "recvuaSskyq6ou", "title": "【书籍】《传热学》杨世铭、陶文铨 第五版", "fingerprint": "M01-1", "form": "书籍", "subject": "基础理论", "link": "https://book.douban.com/subject_search?search_text=%E4%BC%A0%E7%83%AD%E5%AD%A6%20%E6%9D%A8%E4%B8%96%E9%93%AD%20%E9%99%B6%E6%96%87%E9%93%A8%20%E7%AC%AC%E4%BA%94%E7%89%88", "video": "", "duration": null, "note": "核心教材。精读第2章稳态导热（平壁/圆筒壁/临界绝热直径/肋片）、第5章对流换热（Nu关联式、管内与外掠）、第6章辐射换热（黑体/灰体/角系数）。本周只啃这三章，其余章节后续按需回查。", "status": "processed"}]}, {"id": "recvuaSuHf4Hxn", "date": "2026-09-14T09:00:00.000+08:00", "status": "未开始", "type": "资料研读", "week": "2", "theme": "航空发动机总体热环境", "desc": "【资料编号 M02-1】部件热环境：压气机（288→600-900K）、燃烧室（火焰>2000K、壁面>1500K）、导向器（燃气 1800-2000K、热流密度最高）、涡轮叶片、涡轮盘、轴承腔、尾喷管", "output": "部件温度-热负荷-冷却方式对照表", "selfeval": "", "note": "", "estMin": 60.0, "materials": [{"id": "recvuaSskyoZDw", "title": "【书籍】《航空发动机原理》廉小纯、吴虎（西工大）", "fingerprint": "M02-1", "form": "书籍", "subject": "总体热环境", "link": "https://book.douban.com/subject_search?search_text=%E8%88%AA%E7%A9%BA%E5%8F%91%E5%8A%A8%E6%9C%BA%E5%8E%9F%E7%90%86%20%E5%BB%89%E5%B0%8F%E7%BA%AF%20%E5%90%B4%E8%99%8E", "video": "", "duration": null, "note": "精读第5章涡轮、第6章燃烧室、第8章冷却与封严。读的时候同步整理一张表：部件—温度范围—热负荷机制—冷却方式，这就是本周的核心输出物。", "status": "processed"}]}, {"id": "recvuaSuHf4J0q", "date": "2026-09-15T09:00:00.000+08:00", "status": "未开始", "type": "资料研读", "week": "2", "theme": "航空发动机总体热环境", "desc": "【资料编号 M02-5】燃烧室与涡轮的热流路径：辐射与对流各自占比、热流密度沿弦向分布规律、为什么导叶前缘热流最高", "output": "热流路径笔记 + 沿弦向热流分布草图", "selfeval": "", "note": "", "estMin": 60.0, "materials": [{"id": "recvuaSskyFd9H", "title": "【书籍】《航空发动机传热学》曹玉璋、陶智（北航）第1-3章", "fingerprint": "M02-5", "form": "书籍", "subject": "总体热环境", "link": "https://book.douban.com/subject_search?search_text=%E8%88%AA%E7%A9%BA%E5%8F%91%E5%8A%A8%E6%9C%BA%E4%BC%A0%E7%83%AD%E5%AD%A6%20%E6%9B%B9%E7%8E%89%E7%92%8B%20%E9%99%B6%E6%99%BA", "video": "", "duration": null, "note": "国内最对口的教材。第1-3章讲发动机热环境与传热基础，后面第4章（空气系统）、涡轮冷却章节分别对应第3、4周。建议直接买一本常备。", "status": "processed"}]}, {"id": "recvuaSuHfmzx0", "date": "2026-09-16T09:00:00.000+08:00", "status": "未开始", "type": "视频课程", "week": "2", "theme": "航空发动机总体热环境", "desc": "【资料编号 M02-2】用实物与图解建立直观认识：内部冷却通道、气膜孔、盘腔吹扫长什么样；配合看 AgentJayZ 拆机视频", "output": "结构认知笔记（可配图）", "selfeval": "", "note": "", "estMin": 60.0, "materials": [{"id": "recvuaSskyKQ2Q", "title": "【书籍】Rolls-Royce《The Jet Engine》第7、8章（英文 PDF）", "fingerprint": "M02-2", "form": "书籍", "subject": "总体热环境", "link": "https://book.douban.com/subject_search?search_text=The%20Jet%20Engine%20Rolls%20Royce%20pdf", "video": "", "duration": null, "note": "网上流传的公开 PDF，图文并茂，用来建立直观认识。第7章空气系统、第8章润滑系统。别逐字读，看图说话，重点记各系统拓扑。", "status": "processed"}, {"id": "recvudhHnucUfI", "title": "【视频】航空发动机工作原理 3D 动画拆解（YouTube）", "fingerprint": "M02-7", "form": "视频", "subject": "总体热环境", "link": "https://www.youtube.com/results?search_query=How%20a%20jet%20engine%20works%203D%20animation", "video": "https://www.youtube.com/results?search_query=How%20a%20jet%20engine%20works%203D%20animation", "duration": null, "note": "先用动画建立整机空间感：风扇、压气机、燃烧室、涡轮、尾喷管怎么串起来，气怎么走。看20分钟胜过读两小时文字。", "status": "processed"}]}, {"id": "recvuaSuHfICt0", "date": "2026-09-17T09:00:00.000+08:00", "status": "未开始", "type": "上机实践", "week": "2", "theme": "航空发动机总体热环境", "desc": "【资料编号 M02-6】输出两张图：整机热源-热沉能量流向图（热源：燃烧室/涡轮/滑油/附件；热沉：燃油/外涵/冲压空气/环境）+ 部件热负荷清单表", "output": "流向图 + 清单表", "selfeval": "", "note": "", "estMin": 60.0, "materials": [{"id": "recvuaSskyYtDO", "title": "【自编练习】部件热负荷清单表 + 整机热源-热沉流向图", "fingerprint": "M02-6", "form": "练习", "subject": "总体热环境", "link": "http://（自编练习/自建工具，内容见提交说明）", "video": "", "duration": null, "note": "自建表格：列出压气机/燃烧室/导叶/涡轮叶片/涡轮盘/轴承腔/尾喷管 7 个部件的温度范围、热负荷机制、冷却需求；再画一张能量流向图，标出热源→热沉（燃油/外涵/环境/引气）的全部路径。", "status": "processed"}]}, {"id": "recvuaSuHfrpGa", "date": "2026-09-18T09:00:00.000+08:00", "status": "未开始", "type": "复盘整理", "week": "2", "theme": "航空发动机总体热环境", "desc": "【资料编号 M02-4】精读 Han J.C. 综述第1-2节建立框架；自测 3 题：叶片表面热流密度沿弦向分布、导向器为何更难冷却、TIT+100K 金属温升估算", "output": "周复盘 + 论文摘要 + 自测答案", "selfeval": "", "note": "", "estMin": 45.0, "materials": [{"id": "recvuaSskyl0o4", "title": "【论文】Han J.C. Fundamental Gas Turbine Heat Transfer (J. Thermal Sci. Eng. Appl. 2013)", "fingerprint": "M02-4", "form": "论文", "subject": "总体热环境", "link": "https://www.semanticscholar.org/search?q=Fundamental%20Gas%20Turbine%20Heat%20Transfer%20Han", "video": "", "duration": null, "note": "涡轮传热经典综述，权威且系统。本周只需读第1-2节建立框架（热负荷来源、各冷却方式概览），细节留到第4周回看。", "status": "processed"}]}, {"id": "recvuaSuHf3v2A", "date": "2026-09-21T09:00:00.000+08:00", "status": "未开始", "type": "资料研读", "week": "3", "theme": "二次空气系统", "desc": "【资料编号 M03-1】引气位置选择：不同压气机级引气的压力与温度权衡；为什么高压涡轮冷却气常从末级引出、低压涡轮从中/低压级引", "output": "引气方案对比笔记", "selfeval": "", "note": "", "estMin": 60.0, "materials": [{"id": "recvuaSskyrlU3", "title": "【书籍】《航空发动机传热学》第4章 空气系统（二次空气系统）", "fingerprint": "M03-1", "form": "书籍", "subject": "二次空气系统", "link": "https://book.douban.com/subject_search?search_text=%E8%88%AA%E7%A9%BA%E5%8F%91%E5%8A%A8%E6%9C%BA%E4%BC%A0%E7%83%AD%E5%AD%A6%20%E7%A9%BA%E6%B0%94%E7%B3%BB%E7%BB%9F%20%E4%BA%8C%E6%AC%A1%E7%A9%BA%E6%B0%94", "video": "", "duration": null, "note": "本周主教材。搞清三件事：引气位置怎么选、二次空气怎么分配、各用户（涡轮冷却/封严/间隙控制）流量占比为什么是这样。", "status": "processed"}]}, {"id": "recvuaSuHfEHjY", "date": "2026-09-22T09:00:00.000+08:00", "status": "未开始", "type": "资料研读", "week": "3", "theme": "二次空气系统", "desc": "【资料编号 M03-2】二次空气分配：涡轮冷却约 60%、封严约 20%、间隙控制约 10%、其他 10%；预旋喷嘴如何降低冷却空气相对总温", "output": "空气分配表 + 预旋原理笔记", "selfeval": "", "note": "", "estMin": 60.0, "materials": [{"id": "recvuaSsky6Vjd", "title": "【书籍】Rolls-Royce《The Jet Engine》第7章 Air System", "fingerprint": "M03-2", "form": "书籍", "subject": "二次空气系统", "link": "https://book.douban.com/subject_search?search_text=The%20Jet%20Engine%20Air%20System%20chapter%207", "video": "", "duration": null, "note": "看系统拓扑图：从压气机各级引出的气怎么走、经过哪些节流孔与腔室、最后排到哪里。配合 M03-1 一起看。", "status": "processed"}]}, {"id": "recvuaSuHfnYok", "date": "2026-09-23T09:00:00.000+08:00", "status": "未开始", "type": "资料研读", "week": "3", "theme": "二次空气系统", "desc": "【资料编号 M03-3】旋转盘腔流动：强迫涡/自由涡结构、风阻加热、盘腔换热关联式；二次空气压力分布对转子轴向力的影响", "output": "盘腔流动笔记 + 关联式摘录", "selfeval": "", "note": "", "estMin": 60.0, "materials": [{"id": "recvuaSskylwJc", "title": "【论文】Owen J.M. Air-Cooled Gas-Turbine Discs: A Review of Recent Research (IJHFF 1988)", "fingerprint": "M03-3", "form": "论文", "subject": "二次空气系统", "link": "https://www.semanticscholar.org/search?q=Air-Cooled%20Gas-Turbine%20Discs%20Review%20Owen", "video": "", "duration": null, "note": "旋转盘腔流动与换热的奠基性综述。重点看强迫涡/自由涡结构、风阻加热、盘腔换热关联式。看不懂的公式先记结论。", "status": "processed"}]}, {"id": "recvuaSuHf4ZtU", "date": "2026-09-24T09:00:00.000+08:00", "status": "未开始", "type": "习题练习", "week": "3", "theme": "二次空气系统", "desc": "【资料编号 M03-7】封严结构与 ACC 主动间隙控制（篦齿/刷式/蜂窝）；完成预旋喷嘴与空气分配的 3 道计算题", "output": "封严对比表 + 计算题答案", "selfeval": "", "note": "", "estMin": 60.0, "materials": [{"id": "recvuaSsky0oPx", "title": "【自编练习】预旋喷嘴与空气分配计算题", "fingerprint": "M03-7", "form": "练习", "subject": "二次空气系统", "link": "http://（自编练习/自建工具，内容见提交说明）", "video": "", "duration": null, "note": "题目：① 引气总温 700K、预旋比 0.8，求预旋喷嘴出口相对总温；② 已知涡轮冷却占 60%、封严 20%、间隙控制 10%，若总引气量为高压压气机流量的 15%，求各支路流量；③ 比较从不同压气机级引气时的压力损失与性能代价。", "status": "processed"}]}, {"id": "recvuaSuHf0u2k", "date": "2026-09-25T09:00:00.000+08:00", "status": "未开始", "type": "复盘整理", "week": "3", "theme": "二次空气系统", "desc": "【资料编号 M03-5】整理知识条目入库；自测 3 题（引气位置、预旋总温、刷式 vs 篦齿）；有余力用 Flowmaster/Excel 搭 3 元件网络", "output": "周复盘 + 知识条目 + 自测答案", "selfeval": "", "note": "", "estMin": 45.0, "materials": [{"id": "recvuaSsky7O74", "title": "【软件】Flowmaster / AMESim 空气系统网络建模入门", "fingerprint": "M03-5", "form": "软件", "subject": "二次空气系统", "link": "https://www.bing.com/search?q=Flowmaster%20air%20system%20tutorial%20gas%20turbine", "video": "", "duration": null, "note": "一维流体网络软件，二次空气系统的行业标准工具。先看官方 tutorial 搭一个 3-4 元件的简单网络（节流孔+管路+腔室），跑通求解即可，不追求复杂模型。没有 license 可用免费试用或改用 Excel 迭代。", "status": "processed"}]}, {"id": "recvuaSuHfURva", "date": "2026-09-28T09:00:00.000+08:00", "status": "未开始", "type": "资料研读", "week": "4", "theme": "涡轮冷却技术", "desc": "【资料编号 M04-1】内部对流冷却：扰流柱、肋片如何强化内部通道换热，典型 η=0.3-0.5；通道内换热与压损的取舍", "output": "内部冷却笔记 + 强化换热机理", "selfeval": "", "note": "", "estMin": 60.0, "materials": [{"id": "recvuaSsky1nGQ", "title": "【书籍】《燃气轮机传热和冷却技术》韩介勤、Du、Ekkad 著（西安交大）", "fingerprint": "M04-1", "form": "书籍", "subject": "涡轮冷却技术", "link": "https://book.douban.com/subject_search?search_text=%E7%87%83%E6%B0%94%E8%BD%AE%E6%9C%BA%E4%BC%A0%E7%83%AD%E5%92%8C%E5%86%B7%E5%8D%B4%E6%8A%80%E6%9C%AF%20%E9%9F%A9%E4%BB%8B%E5%8B%A4", "video": "", "duration": null, "note": "整个学习计划最核心的一本书，精读第3-6章：内部对流冷却（扰流柱/肋片）、冲击冷却、气膜冷却、复合冷却。后续所有冷却计算都从这本书出。", "status": "processed"}, {"id": "recvudhHnulsYc", "title": "【视频】涡轮叶片内部冷却通道 3D 透视动画（YouTube）", "fingerprint": "M04-7", "form": "视频", "subject": "涡轮冷却技术", "link": "https://www.youtube.com/results?search_query=turbine%20blade%20internal%20cooling%20passage%20animation", "video": "https://www.youtube.com/results?search_query=turbine%20blade%20internal%20cooling%20passage%20animation", "duration": 12.0, "note": "看内部蛇形通道、扰流柱、尾缘劈缝、气膜孔的空间关系。第4周读教材前先看这个，抽象结构立刻具象化。", "status": "processed"}]}, {"id": "recvuaSuHfQiio", "date": "2026-09-29T09:00:00.000+08:00", "status": "未开始", "type": "资料研读", "week": "4", "theme": "涡轮冷却技术", "desc": "【资料编号 M04-1】冲击冷却：射流冲击为什么 Nu 高、η=0.5-0.7；与前缘/中弦的布置关系，与内部对流的对比", "output": "冲击冷却笔记 + 与内部对流对比表", "selfeval": "", "note": "", "estMin": 60.0, "materials": [{"id": "recvuaSsky1nGQ", "title": "【书籍】《燃气轮机传热和冷却技术》韩介勤、Du、Ekkad 著（西安交大）", "fingerprint": "M04-1", "form": "书籍", "subject": "涡轮冷却技术", "link": "https://book.douban.com/subject_search?search_text=%E7%87%83%E6%B0%94%E8%BD%AE%E6%9C%BA%E4%BC%A0%E7%83%AD%E5%92%8C%E5%86%B7%E5%8D%B4%E6%8A%80%E6%9C%AF%20%E9%9F%A9%E4%BB%8B%E5%8B%A4", "video": "", "duration": null, "note": "整个学习计划最核心的一本书，精读第3-6章：内部对流冷却（扰流柱/肋片）、冲击冷却、气膜冷却、复合冷却。后续所有冷却计算都从这本书出。", "status": "processed"}]}, {"id": "recvuaSuHf84W1", "date": "2026-09-30T09:00:00.000+08:00", "status": "未开始", "type": "资料研读", "week": "4", "theme": "涡轮冷却技术", "desc": "【资料编号 M04-2】气膜冷却：绝热气膜效率 η_f 定义、吹风比与孔型（圆柱孔/扇形孔/复合角）影响、下游衰减规律", "output": "气膜冷却笔记（含 η_f 定义）", "selfeval": "", "note": "", "estMin": 60.0, "materials": [{"id": "recvuaSskyPqzR", "title": "【论文】Goldstein R.J. Film Cooling (Advances in Heat Transfer, 1971)", "fingerprint": "M04-2", "form": "论文", "subject": "涡轮冷却技术", "link": "https://www.semanticscholar.org/search?q=Goldstein%20Film%20Cooling%20Advances%20in%20Heat%20Transfer", "video": "", "duration": null, "note": "气膜冷却的开山综述。重点：绝热气膜效率定义、吹风比影响、下游衰减规律。经典但较难，先看定义与实验结论，关联式部分可跳。", "status": "processed"}]}, {"id": "recvuaSuHfJNZ7", "date": "2026-10-01T09:00:00.000+08:00", "status": "未开始", "type": "习题练习", "week": "4", "theme": "涡轮冷却技术", "desc": "【资料编号 M04-6】发散冷却（η>0.7）与复合冷却；完成冷却效率 4 道计算题（含 Tg1700K 算例与 Bi 数判断）", "output": "4 道题答案 + 综合效率估算", "selfeval": "", "note": "", "estMin": 60.0, "materials": [{"id": "recvuaSskyUi9I", "title": "【自编练习】冷却效率与气膜效率计算题", "fingerprint": "M04-6", "form": "练习", "subject": "涡轮冷却技术", "link": "http://（自编练习/自建工具，内容见提交说明）", "video": "", "duration": null, "note": "题目：① 推导 η=(Tg-Tm)/(Tg-Tc)，说明 Tg/Tm/Tc 物理含义；② Tg=1700K、Tc=800K、Tm=1200K，求所需冷却效率；③ 用 Bi 数判断某叶片能否按等温体处理；④ 内部对流 η=0.45、气膜 η_f=0.35，估算复合冷却综合效率。", "status": "processed"}]}, {"id": "recvuaSuHfi8aG", "date": "2026-10-02T09:00:00.000+08:00", "status": "未开始", "type": "复盘整理", "week": "4", "theme": "涡轮冷却技术", "desc": "【资料编号 M04-3】读 Bunker GT2013 建立技术演进脉络；自测 3 题（η 定义与 Tg/Tm/Tc 含义、冲击 vs 气膜优劣、所需冷却效率求解）", "output": "周复盘 + 知识条目 + 自测答案", "selfeval": "", "note": "", "estMin": 45.0, "materials": [{"id": "recvuaSskysWQx", "title": "【论文】Bunker R.S. Gas Turbine Cooling: Moving From Macro to Micro (ASME GT2013)", "fingerprint": "M04-3", "form": "论文", "subject": "涡轮冷却技术", "link": "https://www.semanticscholar.org/search?q=Gas%20Turbine%20Cooling%20Moving%20From%20Macro%20to%20Micro%20Bunker", "video": "", "duration": null, "note": "从宏观冷却结构讲到微尺度冷却，适合建立技术演进脉络。周末读，用来回答「为什么现在要用双层壁/微通道」。", "status": "processed"}]}, {"id": "recvuaSviC0Ogw", "date": "2026-10-05T09:00:00.000+08:00", "status": "未开始", "type": "资料研读", "week": "5", "theme": "滑油系统", "desc": "【资料编号 M05-3】轴承与齿轮热生成：SKF 模型、Palmgren 摩擦功耗公式；滑油流量按散热需求与润滑需求取大值确定", "output": "热生成公式录入工具库", "selfeval": "", "note": "", "estMin": 60.0, "materials": [{"id": "recvuaSsky0k1W", "title": "【论文】Flouros M. Correlations for Heat Generation in Aero Engine Bearings (ASME GT2006)", "fingerprint": "M05-3", "form": "论文", "subject": "滑油系统", "link": "https://www.semanticscholar.org/search?q=Correlations%20for%20Heat%20Generation%20in%20Aero%20Engine%20Bearings%20Flouros", "video": "", "duration": null, "note": "轴承发热量的权威关联式（SKF 模型、Palmgren 公式出处）。把公式和适用条件录入工具库，后面算热平衡直接用。", "status": "processed"}]}, {"id": "recvuaSviCKnoZ", "date": "2026-10-06T09:00:00.000+08:00", "status": "未开始", "type": "资料研读", "week": "5", "theme": "滑油系统", "desc": "【资料编号 M05-1】系统组成与温度控制：供油 350-380K、回油<450K；泵/滤/磁堵/压力调节阀/旁通阀等附件的作用与布置", "output": "系统图笔记 + 温度限值表", "selfeval": "", "note": "", "estMin": 60.0, "materials": [{"id": "recvuaSskya24X", "title": "【书籍】Rolls-Royce《The Jet Engine》第8章 Lubrication", "fingerprint": "M05-1", "form": "书籍", "subject": "滑油系统", "link": "https://book.douban.com/subject_search?search_text=The%20Jet%20Engine%20lubrication%20system%20chapter%208", "video": "", "duration": null, "note": "看滑油系统完整回路图：油箱—供油泵—滤—轴承腔—回油泵—换热器—回油箱。记住每个附件的布置位置和作用。", "status": "processed"}, {"id": "recvudhHnuznlM", "title": "【视频】航空发动机滑油系统 工作原理与回路动画（B站/YouTube）", "fingerprint": "M05-7", "form": "视频", "subject": "滑油系统", "link": "https://search.bilibili.com/all?keyword=%E8%88%AA%E7%A9%BA%E5%8F%91%E5%8A%A8%E6%9C%BA%20%E6%BB%91%E6%B2%B9%E7%B3%BB%E7%BB%9F%20%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86", "video": "https://search.bilibili.com/all?keyword=%E8%88%AA%E7%A9%BA%E5%8F%91%E5%8A%A8%E6%9C%BA%20%E6%BB%91%E6%B2%B9%E7%B3%BB%E7%BB%9F%20%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86", "duration": 15.0, "note": "看供油-轴承腔-回油-换热-除气的完整回路动画。第5周配合 The Jet Engine 第8章一起看。", "status": "processed"}]}, {"id": "recvuaSviCbp55", "date": "2026-10-07T09:00:00.000+08:00", "status": "未开始", "type": "资料研读", "week": "5", "theme": "滑油系统", "desc": "【资料编号 M05-2】ACOC（冷源：外涵/冲压空气）与 FCOC（热沉：燃油）设计要点；滑油热平衡方程与除气器原理", "output": "ACOC/FCOC 设计要点 + 除气原理笔记", "selfeval": "", "note": "", "estMin": 60.0, "materials": [{"id": "recvuaSskysyQJ", "title": "【论文】林基恕 等：航空发动机滑油系统热分析（航空动力学报）", "fingerprint": "M05-2", "form": "论文", "subject": "滑油系统", "link": "https://xueshu.baidu.com/s?wd=%E8%88%AA%E7%A9%BA%E5%8F%91%E5%8A%A8%E6%9C%BA%E6%BB%91%E6%B2%B9%E7%B3%BB%E7%BB%9F%E7%83%AD%E5%88%86%E6%9E%90%20%E8%88%AA%E7%A9%BA%E5%8A%A8%E5%8A%9B%E5%AD%A6%E6%8A%A5", "video": "", "duration": null, "note": "中文文献，直接给出滑油系统热平衡建模方法与工程数据。重点摘录：轴承发热估算、供回油温度控制范围、ACOC/FCOC 匹配原则。", "status": "processed"}]}, {"id": "recvuaSviCfHT4", "date": "2026-10-08T09:00:00.000+08:00", "status": "未开始", "type": "上机实践", "week": "5", "theme": "滑油系统", "desc": "【资料编号 M05-6】完成 4 道计算题：温升、ACOC 换热与空气出口温度、滑油流量取值、除气必要性；用代码或 Excel 建可复用计算表", "output": "计算表 + 4 题答案", "selfeval": "", "note": "", "estMin": 60.0, "materials": [{"id": "recvuaSskyuArr", "title": "【自编练习】滑油系统热平衡与 ACOC 设计计算题", "fingerprint": "M05-6", "form": "练习", "subject": "滑油系统", "link": "http://（自编练习/自建工具，内容见提交说明）", "video": "", "duration": null, "note": "题目：① 轴承摩擦功耗 5kW、滑油流量 30L/min，求滑油温升（取 cp≈2.0 kJ/(kg·K)、ρ≈850 kg/m³）；② ACOC 设计：滑油侧 30L/min，440K→370K，空气侧 0.5kg/s、300K，求换热量与空气出口温度；③ 按散热需求与润滑需求分别算滑油流量并取大值；④ 说明除气必要性。", "status": "processed"}]}, {"id": "recvuaSviC8OC4", "date": "2026-10-09T09:00:00.000+08:00", "status": "未开始", "type": "复盘整理", "week": "5", "theme": "滑油系统", "desc": "【资料编号 M05-4】整理知识条目入库；翻阅 SAE AIR 5020 温度限制/流量裕度/除气三节；自测 3 题", "output": "周复盘 + 知识条目 + 自测答案", "selfeval": "", "note": "", "estMin": 45.0, "materials": [{"id": "recvuaSsky69hL", "title": "【标准】SAE AIR 5020 滑油系统设计指南", "fingerprint": "M05-4", "form": "标准", "subject": "滑油系统", "link": "https://www.sae.org/standards?search=SAE%20AIR%205020%20lubrication%20system%20design", "video": "", "duration": null, "note": "工程标准，规定了滑油系统设计的边界条件与验证要求。周末翻阅，重点看温度限制、流量裕度、除气要求三节。", "status": "processed"}]}, {"id": "recvuaSviCVLx3", "date": "2026-10-12T09:00:00.000+08:00", "status": "未开始", "type": "资料研读", "week": "6", "theme": "燃油系统热管理", "desc": "【资料编号 M06-1】燃油热沉：Q_fuel=ṁ·cp·(T_limit-T_tank)；热沉匹配分析框架（需求侧 vs 供给侧），中文综述建立整体认知", "output": "热沉匹配框架笔记", "selfeval": "", "note": "", "estMin": 60.0, "materials": [{"id": "recvuaSskyPiYg", "title": "【论文】张鹏 等：航空发动机燃油热管理系统研究进展（推进技术）", "fingerprint": "M06-1", "form": "论文", "subject": "燃油系统热管理", "link": "https://xueshu.baidu.com/s?wd=%E8%88%AA%E7%A9%BA%E5%8F%91%E5%8A%A8%E6%9C%BA%E7%87%83%E6%B2%B9%E7%83%AD%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F%E7%A0%94%E7%A9%B6%E8%BF%9B%E5%B1%95%20%E6%8E%A8%E8%BF%9B%E6%8A%80%E6%9C%AF", "video": "", "duration": null, "note": "中文综述，先读它建立框架：燃油热沉能力、系统拓扑、热沉匹配方法、国内外研究现状。读完再读英文论文。", "status": "processed"}, {"id": "recvudhHnu4HMi", "title": "【视频】飞机燃油系统与热管理 讲解视频（YouTube/B站）", "fingerprint": "M06-7", "form": "视频", "subject": "燃油系统热管理", "link": "https://www.youtube.com/results?search_query=aircraft%20fuel%20system%20thermal%20management%20explained", "video": "https://www.youtube.com/results?search_query=aircraft%20fuel%20system%20thermal%20management%20explained", "duration": 18.0, "note": "先看燃油系统构成（油箱、增压泵、燃油-滑油换热器、喷嘴），再理解为什么燃油是发动机的最终热沉。", "status": "processed"}]}, {"id": "recvuaSviCg641", "date": "2026-10-13T09:00:00.000+08:00", "status": "未开始", "type": "资料研读", "week": "6", "theme": "燃油系统热管理", "desc": "【资料编号 M06-3】焦化机理：热氧化结焦 >420K 开始、>450K 急剧加速；喷嘴温度限制、燃油回油循环在低功率时增加热沉流量的做法", "output": "结焦机理笔记 + 温度限值", "selfeval": "", "note": "", "estMin": 60.0, "materials": [{"id": "recvuaSskyMtuk", "title": "【标准】MIL-DTL-5624 航空燃油规范（热氧化安定性要求）", "fingerprint": "M06-3", "form": "标准", "subject": "燃油系统热管理", "link": "https://www.sae.org/standards?search=MIL-DTL-5624%20turbine%20fuel%20specification", "video": "", "duration": null, "note": "查热氧化安定性（JFTOT）指标与温度限制，这是燃油侧温度上限（约 420-430K）的标准依据。摘录关键条款入库。", "status": "processed"}]}, {"id": "recvuaSviCKEZV", "date": "2026-10-14T09:00:00.000+08:00", "status": "未开始", "type": "资料研读", "week": "6", "theme": "燃油系统热管理", "desc": "【资料编号 M06-2】换热器网络拓扑（串联/并联）优化；燃油-空气换热器在超声速工况下的取舍；热沉需求与燃烧性能、结焦风险的三方权衡", "output": "网络拓扑对比 + 权衡分析笔记", "selfeval": "", "note": "", "estMin": 60.0, "materials": [{"id": "recvuaSskygPBD", "title": "【论文】Dooley M. et al. Fuel Thermal Management Systems for High Performance Aircraft (AIAA)", "fingerprint": "M06-2", "form": "论文", "subject": "燃油系统热管理", "link": "https://www.semanticscholar.org/search?q=Fuel%20Thermal%20Management%20Systems%20for%20High%20Performance%20Aircraft", "video": "", "duration": null, "note": "高性能飞机燃油热管理的经典论文。重点：热沉不足的处理策略、回油循环方案、与空气/滑油系统的耦合方式。", "status": "processed"}]}, {"id": "recvuaSviCxgZr", "date": "2026-10-15T09:00:00.000+08:00", "status": "未开始", "type": "上机实践", "week": "6", "theme": "燃油系统热管理", "desc": "【资料编号 M06-5】完成 4 道题：热沉能力计算、巡航热沉不足分析、燃油温度剖面草图、回油循环 vs 增大 ACOC 方案对比", "output": "计算表 + 4 题答案", "selfeval": "", "note": "", "estMin": 60.0, "materials": [{"id": "recvuaSskyEiBV", "title": "【自编练习】燃油热沉能力与结焦分析计算题", "fingerprint": "M06-5", "form": "练习", "subject": "燃油系统热管理", "link": "http://（自编练习/自建工具，内容见提交说明）", "video": "", "duration": null, "note": "题目：① 燃油流量 0.3kg/s、cp=2.0 kJ/(kg·K)、油箱 288K、喷前限温 430K，求热沉能力；② 分析高空巡航时热沉为何可能不足；③ 画出燃油温度沿飞行剖面的变化草图并标出结焦风险区；④ 比较回油循环与增大 ACOC 两种方案。", "status": "processed"}]}, {"id": "recvuaSviCeMmt", "date": "2026-10-16T09:00:00.000+08:00", "status": "未开始", "type": "复盘整理", "week": "6", "theme": "燃油系统热管理", "desc": "【资料编号 M06-6】检索精读 2 篇结焦/热氧化文献；整理知识条目入库；自测 3 题", "output": "周复盘 + 文献摘要 + 自测答案", "selfeval": "", "note": "", "estMin": 45.0, "materials": [{"id": "recvuaSskyRI93", "title": "【论文】燃油结焦与热氧化安定性研究综述（检索入口）", "fingerprint": "M06-6", "form": "论文", "subject": "燃油系统热管理", "link": "https://xueshu.baidu.com/s?wd=%E8%88%AA%E7%A9%BA%E7%87%83%E6%B2%B9%20%E7%83%AD%E6%B0%A7%E5%8C%96%20%E7%BB%93%E7%84%A6%20%E9%AB%98%E6%B8%A9%20%E6%B2%89%E7%A7%AF", "video": "", "duration": null, "note": "检索近 5 年文献，挑 2 篇精读：一篇讲结焦机理与温度阈值，一篇讲抑制措施（脱氧、添加剂、表面处理）。", "status": "processed"}]}, {"id": "recvuaSviC8IVA", "date": "2026-10-19T09:00:00.000+08:00", "status": "未开始", "type": "资料研读", "week": "7", "theme": "多系统热平衡与优化", "desc": "【资料编号 M07-1】整机热管理网络：二次空气-滑油-燃油-环境的耦合关系；照 M07-1 的建模思路列写各子系统能量方程", "output": "耦合关系笔记 + 能量方程清单", "selfeval": "", "note": "", "estMin": 60.0, "materials": [{"id": "recvuaSskyqaQn", "title": "【论文】郭晓宇 等：航空发动机热管理系统建模与仿真（航空动力学报）", "fingerprint": "M07-1", "form": "论文", "subject": "多系统热平衡与优化", "link": "https://xueshu.baidu.com/s?wd=%E8%88%AA%E7%A9%BA%E5%8F%91%E5%8A%A8%E6%9C%BA%E7%83%AD%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F%E5%BB%BA%E6%A8%A1%E4%B8%8E%E4%BB%BF%E7%9C%9F", "video": "", "duration": null, "note": "整周核心参考文献。照着它的建模思路搭你自己的整机热管理模型：子系统能量方程 → 耦合边界 → 迭代求解 → 工况扫描。", "status": "processed"}]}, {"id": "recvuaSviCnYEy", "date": "2026-10-20T09:00:00.000+08:00", "status": "未开始", "type": "上机实践", "week": "7", "theme": "多系统热平衡与优化", "desc": "【资料编号 M07-4】建模四步：建立方程 → 确定耦合边界 → 迭代求解 → 工况扫描；用 Python/Excel 或 GT-SUITE 搭第一版整机热平衡模型", "output": "模型文件 + 求解结果", "selfeval": "", "note": "", "estMin": 60.0, "materials": [{"id": "recvuaSskyvWk9", "title": "【软件】GT-SUITE / Flowmaster 航空热管理案例教程", "fingerprint": "M07-4", "form": "软件", "subject": "多系统热平衡与优化", "link": "https://www.bing.com/search?q=GT-SUITE%20aircraft%20thermal%20management%20tutorial", "video": "", "duration": null, "note": "系统级仿真工具的官方案例。照着搭一个含二次空气、滑油、燃油三条回路的耦合模型；没有 license 就用手写 Python/Excel 迭代求解代替，物理是一样的。", "status": "processed"}]}, {"id": "recvuaSviCeqP6", "date": "2026-10-21T09:00:00.000+08:00", "status": "未开始", "type": "资料研读", "week": "7", "theme": "多系统热平衡与优化", "desc": "【资料编号 M07-2】优化目标与权衡：性能损失 vs 部件寿命 vs 重量；参数敏感性分析（引气量、换热器面积、滑油流量对各温度的影响）", "output": "权衡分析笔记 + 敏感性结论", "selfeval": "", "note": "", "estMin": 60.0, "materials": [{"id": "recvuaSskyzrtk", "title": "【论文】McCarthy K. et al. Integrated Thermal Management of Aircraft (AIAA)", "fingerprint": "M07-2", "form": "论文", "subject": "多系统热平衡与优化", "link": "https://www.semanticscholar.org/search?q=Integrated%20Thermal%20Management%20of%20Aircraft%20AIAA", "video": "", "duration": null, "note": "飞机层面（不只是发动机）的综合热管理视角：热沉统筹、系统级权衡、未来架构。用来拓宽视野。", "status": "processed"}]}, {"id": "recvuaSviCtrhT", "date": "2026-10-22T09:00:00.000+08:00", "status": "未开始", "type": "上机实践", "week": "7", "theme": "多系统热平衡与优化", "desc": "【资料编号 M07-6】完成敏感性练习：引气 +5% 的连锁影响；设计控制逻辑（超温时旁通阀/引气/回油的调节顺序）；起飞与巡航工况对比", "output": "敏感性分析图 + 控制逻辑方案", "selfeval": "", "note": "", "estMin": 60.0, "materials": [{"id": "recvuaSskyArBS", "title": "【自编练习】整机热平衡与敏感性分析练习", "fingerprint": "M07-6", "form": "练习", "subject": "多系统热平衡与优化", "link": "http://（自编练习/自建工具，内容见提交说明）", "video": "", "duration": null, "note": "题目：① 画整机热管理耦合框图，标出所有换热路径；② 引气量增加 5%，分析对滑油温度、燃油温度、推力的连锁影响；③ 设计控制逻辑：滑油温度超过 440K 时如何调节（旁通阀/引气/回油）；④ 起飞与巡航两工况热平衡对比。", "status": "processed"}]}, {"id": "recvuaSviCpHPs", "date": "2026-10-23T09:00:00.000+08:00", "status": "未开始", "type": "复盘整理", "week": "7", "theme": "多系统热平衡与优化", "desc": "【资料编号 M07-3】对照 SAE AIR 1168/5 检查模型假设；自测 3 题（耦合框图、引气+5% 影响链、超温控制逻辑）", "output": "周复盘 + 知识条目 + 自测答案", "selfeval": "", "note": "", "estMin": 45.0, "materials": [{"id": "recvuaSsky3hDZ", "title": "【标准】SAE AIR 1168/5 Aerospace Thermal Management", "fingerprint": "M07-3", "form": "标准", "subject": "多系统热平衡与优化", "link": "https://www.sae.org/standards?search=SAE%20AIR%201168%20aerospace%20thermal%20management", "video": "", "duration": null, "note": "航空航天热管理标准，提供术语、设计流程与验证方法。周末翻阅，重点对照自己模型的假设是否合理。", "status": "processed"}]}, {"id": "recvuaSviCbkeR", "date": "2026-10-26T09:00:00.000+08:00", "status": "未开始", "type": "资料研读", "week": "8", "theme": "前沿技术与综合案例", "desc": "【资料编号 M08-1】前沿方向梳理：双层壁/发汗/微通道冷却、增材制造换热器、智能热管理（模型控制、数字孪生）、纳米流体与相变材料、混合电推进热管理", "output": "前沿技术分类表", "selfeval": "", "note": "", "estMin": 60.0, "materials": [{"id": "recvuaSskyTtQJ", "title": "【论文】Bunker R.S. Evolution of Turbine Cooling (ASME GT2017)", "fingerprint": "M08-1", "form": "论文", "subject": "前沿技术与综合案例", "link": "https://www.semanticscholar.org/search?q=Evolution%20of%20Turbine%20Cooling%20Bunker%20ASME%20GT2017", "video": "", "duration": null, "note": "冷却技术演进全景，从内部对流到双层壁、微通道、增材制造。第8周开篇读，用来定位前沿方向。", "status": "processed"}]}, {"id": "recvuaSviC7XL3", "date": "2026-10-27T09:00:00.000+08:00", "status": "未开始", "type": "资料研读", "week": "8", "theme": "前沿技术与综合案例", "desc": "【资料编号 M08-5】选定案例（A 设计类 或 B 综述类），写出研究方案/写作提纲：问题定义、方法路径、验证方式、交付物清单", "output": "案例方案一页纸", "selfeval": "", "note": "", "estMin": 60.0, "materials": [{"id": "recvuaSskyXxGX", "title": "【自编练习】综合案例A：某涡扇发动机热管理系统设计", "fingerprint": "M08-5", "form": "练习", "subject": "前沿技术与综合案例", "link": "http://（自编练习/自建工具，内容见提交说明）", "video": "", "duration": null, "note": "已知：起飞推力 120kN、涵道比 8、涡轮入口温度 1800K。要求：① 设计二次空气分配方案（涡轮冷却/封严/间隙控制占比与各支路流量）；② 设计滑油散热回路（ACOC+FCOC 匹配、供回油温度校核）；③ 做燃油热沉匹配（多工况）；④ 输出方案报告 + 仿真模型。交付物：报告 + 计算表/模型。", "status": "processed"}]}, {"id": "recvuaSviCrXzg", "date": "2026-10-28T09:00:00.000+08:00", "status": "未开始", "type": "上机实践", "week": "8", "theme": "前沿技术与综合案例", "desc": "【资料编号 M08-3】案例执行：A 做二次空气分配 + 滑油回路 + 燃油热沉匹配计算；B 精读 10 篇论文并抽取关键数据", "output": "计算结果 或 文献笔记", "selfeval": "", "note": "", "estMin": 60.0, "materials": [{"id": "recvuaSsky7gRo", "title": "【论文】张靖周 等：航空发动机热管理系统研究综述（推进技术）", "fingerprint": "M08-3", "form": "论文", "subject": "前沿技术与综合案例", "link": "https://xueshu.baidu.com/s?wd=%E8%88%AA%E7%A9%BA%E5%8F%91%E5%8A%A8%E6%9C%BA%E7%83%AD%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F%E7%A0%94%E7%A9%B6%E7%BB%BC%E8%BF%B0%20%E5%BC%A0%E9%9D%96%E5%91%A8", "video": "", "duration": null, "note": "系统层面的中文综述，适合作为综合案例（尤其是案例B综述写作）的骨架参考。", "status": "processed"}]}, {"id": "recvuaSviCO0AP", "date": "2026-10-29T09:00:00.000+08:00", "status": "未开始", "type": "上机实践", "week": "8", "theme": "前沿技术与综合案例", "desc": "【资料编号 M08-4】成果撰写：A 输出热管理方案报告（含模型）；B 输出 3000 字综述初稿", "output": "报告初稿 / 综述初稿", "selfeval": "", "note": "", "estMin": 60.0, "materials": [{"id": "recvuaSskycPTW", "title": "【检索入口】ASME Turbo Expo 近 5 年热管理相关论文", "fingerprint": "M08-4", "form": "论文", "subject": "前沿技术与综合案例", "link": "https://www.semanticscholar.org/search?q=ASME%20Turbo%20Expo%20thermal%20management%20gas%20turbine", "video": "", "duration": null, "note": "在 ASME Digital Collection 或 Google Scholar 按此关键词检索近 5 年（GT2021-GT2026）论文，筛出 10 篇精读，用于案例B的文献综述。", "status": "processed"}]}, {"id": "recvuaSviC7uJh", "date": "2026-10-30T09:00:00.000+08:00", "status": "未开始", "type": "复盘整理", "week": "8", "theme": "前沿技术与综合案例", "desc": "【资料编号 M08-2】周期总复盘：对照 6 项完成标准逐项自评；知识体系整合；写出下一周期计划", "output": "周期总结 + 自评表 + 下期计划", "selfeval": "", "note": "", "estMin": 60.0, "materials": [{"id": "recvuaSskyoXPJ", "title": "【论文】陶智 等：航空发动机热端部件冷却技术研究进展（航空学报）", "fingerprint": "M08-2", "form": "论文", "subject": "前沿技术与综合案例", "link": "https://xueshu.baidu.com/s?wd=%E8%88%AA%E7%A9%BA%E5%8F%91%E5%8A%A8%E6%9C%BA%E7%83%AD%E7%AB%AF%E9%83%A8%E4%BB%B6%E5%86%B7%E5%8D%B4%E6%8A%80%E6%9C%AF%E7%A0%94%E7%A9%B6%E8%BF%9B%E5%B1%95%20%E9%99%B6%E6%99%BA", "video": "", "duration": null, "note": "国内团队权威综述，中文好读。重点：双层壁冷却、发汗冷却、CMC 与冷却结构的结合。", "status": "processed"}]}], "materials": [{"id": "recvqh6GtIR48W", "title": "", "fingerprint": "", "form": "", "subject": "", "link": "", "video": "", "duration": null, "note": "", "status": "pending"}, {"id": "recvuaSskyq6ou", "title": "【书籍】《传热学》杨世铭、陶文铨 第五版", "fingerprint": "M01-1", "form": "书籍", "subject": "基础理论", "link": "https://book.douban.com/subject_search?search_text=%E4%BC%A0%E7%83%AD%E5%AD%A6%20%E6%9D%A8%E4%B8%96%E9%93%AD%20%E9%99%B6%E6%96%87%E9%93%A8%20%E7%AC%AC%E4%BA%94%E7%89%88", "video": "", "duration": null, "note": "核心教材。精读第2章稳态导热（平壁/圆筒壁/临界绝热直径/肋片）、第5章对流换热（Nu关联式、管内与外掠）、第6章辐射换热（黑体/灰体/角系数）。本周只啃这三章，其余章节后续按需回查。", "status": "processed"}, {"id": "recvuaSskyB0tY", "title": "【书籍】《工程热力学》沈维道 第五版", "fingerprint": "M01-2", "form": "书籍", "subject": "基础理论", "link": "https://book.douban.com/subject_search?search_text=%E5%B7%A5%E7%A8%8B%E7%83%AD%E5%8A%9B%E5%AD%A6%20%E6%B2%88%E7%BB%B4%E9%81%93%20%E7%AC%AC%E4%BA%94%E7%89%88", "video": "", "duration": null, "note": "只读第2章热力学第一定律、第4章开口系统稳流过程。目标是能熟练写出 Q̇-Ẇ=ṁ(h_out-h_in)，并直接套到滑油回路、燃油回路的热平衡计算上。", "status": "processed"}, {"id": "recvuaSsky1XfC", "title": "【视频】B站：传热学 杨世铭 考研精讲（西安交大）", "fingerprint": "M01-3", "form": "视频", "subject": "基础理论", "link": "https://search.bilibili.com/all?keyword=%E4%BC%A0%E7%83%AD%E5%AD%A6%20%E6%9D%A8%E4%B8%96%E9%93%AD%20%E8%80%83%E7%A0%94%E7%B2%BE%E8%AE%B2", "video": "https://search.bilibili.com/all?keyword=%E4%BC%A0%E7%83%AD%E5%AD%A6%20%E6%9D%A8%E4%B8%96%E9%93%AD%20%E8%80%83%E7%A0%94%E7%B2%BE%E8%AE%B2", "duration": null, "note": "教材看不进去时换这个，1.5倍速过一遍导热与对流部分，重点是建立物理图像，不必记公式。", "status": "processed"}, {"id": "recvuaSsky8IvJ", "title": "【书籍】Incropera《Fundamentals of Heat and Mass Transfer》（英文对照）", "fingerprint": "M01-4", "form": "书籍", "subject": "基础理论", "link": "https://book.douban.com/subject_search?search_text=Fundamentals%20of%20Heat%20and%20Mass%20Transfer%20Incropera", "video": "", "duration": null, "note": "选读。中文教材表述不清时查英文原版：第3章导热、第8章内部强迫对流。也是后续读英文论文前的术语热身。", "status": "processed"}, {"id": "recvuaSskyC4RK", "title": "【自编练习】ε-NTU 与 LMTD 换热器计算题 5 道", "fingerprint": "M01-5", "form": "练习", "subject": "基础理论", "link": "http://（自编练习/自建工具，内容见提交说明）", "video": "", "duration": null, "note": "题目：① 管壳式换热器，已知两侧流量与进出口温度，用 LMTD 求面积；② 同题改用 ε-NTU 求解并对比；③ 顺流/逆流 LMTD 对比；④ 一侧相变时 ε-NTU 退化形式；⑤ 换热器效能随 NTU 变化曲线绘制。做完对照教材答案订正。", "status": "processed"}, {"id": "recvuaSskyONp6", "title": "【工具】MATLAB / Python 热阻网络与换热器计算模板", "fingerprint": "M01-6", "form": "工具", "subject": "基础理论", "link": "http://（自编练习/自建工具，内容见提交说明）", "video": "", "duration": null, "note": "自建。用 Python（numpy + matplotlib）或 MATLAB 写一个脚本：输入几何与流动参数，输出热阻网络各节点温度、Nu、换热系数、ε-NTU 结果。这个模板后面第5-7周会反复复用。", "status": "processed"}, {"id": "recvuaSskyoZDw", "title": "【书籍】《航空发动机原理》廉小纯、吴虎（西工大）", "fingerprint": "M02-1", "form": "书籍", "subject": "总体热环境", "link": "https://book.douban.com/subject_search?search_text=%E8%88%AA%E7%A9%BA%E5%8F%91%E5%8A%A8%E6%9C%BA%E5%8E%9F%E7%90%86%20%E5%BB%89%E5%B0%8F%E7%BA%AF%20%E5%90%B4%E8%99%8E", "video": "", "duration": null, "note": "精读第5章涡轮、第6章燃烧室、第8章冷却与封严。读的时候同步整理一张表：部件—温度范围—热负荷机制—冷却方式，这就是本周的核心输出物。", "status": "processed"}, {"id": "recvuaSskyKQ2Q", "title": "【书籍】Rolls-Royce《The Jet Engine》第7、8章（英文 PDF）", "fingerprint": "M02-2", "form": "书籍", "subject": "总体热环境", "link": "https://book.douban.com/subject_search?search_text=The%20Jet%20Engine%20Rolls%20Royce%20pdf", "video": "", "duration": null, "note": "网上流传的公开 PDF，图文并茂，用来建立直观认识。第7章空气系统、第8章润滑系统。别逐字读，看图说话，重点记各系统拓扑。", "status": "processed"}, {"id": "recvuaSskynJXC", "title": "【视频】YouTube：How Jet Engine Cooling Works（AgentJayZ）", "fingerprint": "M02-3", "form": "视频", "subject": "总体热环境", "link": "https://www.youtube.com/results?search_query=How%20Jet%20Engine%20Cooling%20Works%20AgentJayZ", "video": "https://www.youtube.com/results?search_query=How%20Jet%20Engine%20Cooling%20Works%20AgentJayZ", "duration": null, "note": "拆机实拍频道，气膜孔、内部冷却通道能看到实物。看完再回头看教材里的冷却结构图会通透很多。", "status": "processed"}, {"id": "recvuaSskyl0o4", "title": "【论文】Han J.C. Fundamental Gas Turbine Heat Transfer (J. Thermal Sci. Eng. Appl. 2013)", "fingerprint": "M02-4", "form": "论文", "subject": "总体热环境", "link": "https://www.semanticscholar.org/search?q=Fundamental%20Gas%20Turbine%20Heat%20Transfer%20Han", "video": "", "duration": null, "note": "涡轮传热经典综述，权威且系统。本周只需读第1-2节建立框架（热负荷来源、各冷却方式概览），细节留到第4周回看。", "status": "processed"}, {"id": "recvuaSskyFd9H", "title": "【书籍】《航空发动机传热学》曹玉璋、陶智（北航）第1-3章", "fingerprint": "M02-5", "form": "书籍", "subject": "总体热环境", "link": "https://book.douban.com/subject_search?search_text=%E8%88%AA%E7%A9%BA%E5%8F%91%E5%8A%A8%E6%9C%BA%E4%BC%A0%E7%83%AD%E5%AD%A6%20%E6%9B%B9%E7%8E%89%E7%92%8B%20%E9%99%B6%E6%99%BA", "video": "", "duration": null, "note": "国内最对口的教材。第1-3章讲发动机热环境与传热基础，后面第4章（空气系统）、涡轮冷却章节分别对应第3、4周。建议直接买一本常备。", "status": "processed"}, {"id": "recvuaSskyYtDO", "title": "【自编练习】部件热负荷清单表 + 整机热源-热沉流向图", "fingerprint": "M02-6", "form": "练习", "subject": "总体热环境", "link": "http://（自编练习/自建工具，内容见提交说明）", "video": "", "duration": null, "note": "自建表格：列出压气机/燃烧室/导叶/涡轮叶片/涡轮盘/轴承腔/尾喷管 7 个部件的温度范围、热负荷机制、冷却需求；再画一张能量流向图，标出热源→热沉（燃油/外涵/环境/引气）的全部路径。", "status": "processed"}, {"id": "recvuaSskyrlU3", "title": "【书籍】《航空发动机传热学》第4章 空气系统（二次空气系统）", "fingerprint": "M03-1", "form": "书籍", "subject": "二次空气系统", "link": "https://book.douban.com/subject_search?search_text=%E8%88%AA%E7%A9%BA%E5%8F%91%E5%8A%A8%E6%9C%BA%E4%BC%A0%E7%83%AD%E5%AD%A6%20%E7%A9%BA%E6%B0%94%E7%B3%BB%E7%BB%9F%20%E4%BA%8C%E6%AC%A1%E7%A9%BA%E6%B0%94", "video": "", "duration": null, "note": "本周主教材。搞清三件事：引气位置怎么选、二次空气怎么分配、各用户（涡轮冷却/封严/间隙控制）流量占比为什么是这样。", "status": "processed"}, {"id": "recvuaSsky6Vjd", "title": "【书籍】Rolls-Royce《The Jet Engine》第7章 Air System", "fingerprint": "M03-2", "form": "书籍", "subject": "二次空气系统", "link": "https://book.douban.com/subject_search?search_text=The%20Jet%20Engine%20Air%20System%20chapter%207", "video": "", "duration": null, "note": "看系统拓扑图：从压气机各级引出的气怎么走、经过哪些节流孔与腔室、最后排到哪里。配合 M03-1 一起看。", "status": "processed"}, {"id": "recvuaSskylwJc", "title": "【论文】Owen J.M. Air-Cooled Gas-Turbine Discs: A Review of Recent Research (IJHFF 1988)", "fingerprint": "M03-3", "form": "论文", "subject": "二次空气系统", "link": "https://www.semanticscholar.org/search?q=Air-Cooled%20Gas-Turbine%20Discs%20Review%20Owen", "video": "", "duration": null, "note": "旋转盘腔流动与换热的奠基性综述。重点看强迫涡/自由涡结构、风阻加热、盘腔换热关联式。看不懂的公式先记结论。", "status": "processed"}, {"id": "recvuaSskyb1Mn", "title": "【论文】预旋喷嘴与旋转盘腔换热研究综述（检索入口）", "fingerprint": "M03-4", "form": "论文", "subject": "二次空气系统", "link": "https://xueshu.baidu.com/s?wd=%E9%A2%84%E6%97%8B%E5%96%B7%E5%98%B4%20%E6%97%8B%E8%BD%AC%E7%9B%98%E8%85%94%20%E6%8D%A2%E7%83%AD%20%E8%88%AA%E7%A9%BA%E5%8F%91%E5%8A%A8%E6%9C%BA", "video": "", "duration": null, "note": "在百度学术/Google Scholar 检索最近 10 年中文与英文文献，挑 2 篇精读：一篇讲预旋降温原理，一篇讲盘腔封严与风阻。摘录关键关联式入库。", "status": "processed"}, {"id": "recvuaSsky7O74", "title": "【软件】Flowmaster / AMESim 空气系统网络建模入门", "fingerprint": "M03-5", "form": "软件", "subject": "二次空气系统", "link": "https://www.bing.com/search?q=Flowmaster%20air%20system%20tutorial%20gas%20turbine", "video": "", "duration": null, "note": "一维流体网络软件，二次空气系统的行业标准工具。先看官方 tutorial 搭一个 3-4 元件的简单网络（节流孔+管路+腔室），跑通求解即可，不追求复杂模型。没有 license 可用免费试用或改用 Excel 迭代。", "status": "processed"}, {"id": "recvuaSsky2Rav", "title": "【视频】B站：航空发动机 空气系统 讲解", "fingerprint": "M03-6", "form": "视频", "subject": "二次空气系统", "link": "https://search.bilibili.com/all?keyword=%E8%88%AA%E7%A9%BA%E5%8F%91%E5%8A%A8%E6%9C%BA%20%E7%A9%BA%E6%B0%94%E7%B3%BB%E7%BB%9F%20%E4%BA%8C%E6%AC%A1%E7%A9%BA%E6%B0%94", "video": "https://search.bilibili.com/all?keyword=%E8%88%AA%E7%A9%BA%E5%8F%91%E5%8A%A8%E6%9C%BA%20%E7%A9%BA%E6%B0%94%E7%B3%BB%E7%BB%9F%20%E4%BA%8C%E6%AC%A1%E7%A9%BA%E6%B0%94", "duration": null, "note": "补充直观认识，搜索后挑播放量高的看，配合教材理解引气—冷却—封严三条支路。", "status": "processed"}, {"id": "recvuaSsky0oPx", "title": "【自编练习】预旋喷嘴与空气分配计算题", "fingerprint": "M03-7", "form": "练习", "subject": "二次空气系统", "link": "http://（自编练习/自建工具，内容见提交说明）", "video": "", "duration": null, "note": "题目：① 引气总温 700K、预旋比 0.8，求预旋喷嘴出口相对总温；② 已知涡轮冷却占 60%、封严 20%、间隙控制 10%，若总引气量为高压压气机流量的 15%，求各支路流量；③ 比较从不同压气机级引气时的压力损失与性能代价。", "status": "processed"}, {"id": "recvuaSsky1nGQ", "title": "【书籍】《燃气轮机传热和冷却技术》韩介勤、Du、Ekkad 著（西安交大）", "fingerprint": "M04-1", "form": "书籍", "subject": "涡轮冷却技术", "link": "https://book.douban.com/subject_search?search_text=%E7%87%83%E6%B0%94%E8%BD%AE%E6%9C%BA%E4%BC%A0%E7%83%AD%E5%92%8C%E5%86%B7%E5%8D%B4%E6%8A%80%E6%9C%AF%20%E9%9F%A9%E4%BB%8B%E5%8B%A4", "video": "", "duration": null, "note": "整个学习计划最核心的一本书，精读第3-6章：内部对流冷却（扰流柱/肋片）、冲击冷却、气膜冷却、复合冷却。后续所有冷却计算都从这本书出。", "status": "processed"}, {"id": "recvuaSskyPqzR", "title": "【论文】Goldstein R.J. Film Cooling (Advances in Heat Transfer, 1971)", "fingerprint": "M04-2", "form": "论文", "subject": "涡轮冷却技术", "link": "https://www.semanticscholar.org/search?q=Goldstein%20Film%20Cooling%20Advances%20in%20Heat%20Transfer", "video": "", "duration": null, "note": "气膜冷却的开山综述。重点：绝热气膜效率定义、吹风比影响、下游衰减规律。经典但较难，先看定义与实验结论，关联式部分可跳。", "status": "processed"}, {"id": "recvuaSskysWQx", "title": "【论文】Bunker R.S. Gas Turbine Cooling: Moving From Macro to Micro (ASME GT2013)", "fingerprint": "M04-3", "form": "论文", "subject": "涡轮冷却技术", "link": "https://www.semanticscholar.org/search?q=Gas%20Turbine%20Cooling%20Moving%20From%20Macro%20to%20Micro%20Bunker", "video": "", "duration": null, "note": "从宏观冷却结构讲到微尺度冷却，适合建立技术演进脉络。周末读，用来回答「为什么现在要用双层壁/微通道」。", "status": "processed"}, {"id": "recvuaSskySxbg", "title": "【视频】YouTube：Turbine Blade Cooling CFD 可视化", "fingerprint": "M04-4", "form": "视频", "subject": "涡轮冷却技术", "link": "https://www.youtube.com/results?search_query=Turbine%20blade%20cooling%20CFD%20visualization%20film%20cooling", "video": "https://www.youtube.com/results?search_query=Turbine%20blade%20cooling%20CFD%20visualization%20film%20cooling", "duration": null, "note": "看气膜孔射流与主流的相互作用动画，直观理解吹风比过大导致射流脱离、冷却效率反而下降的现象。", "status": "processed"}, {"id": "recvuaSskyx6su", "title": "【软件】ANSYS Fluent 单孔气膜冷却仿真教程", "fingerprint": "M04-5", "form": "软件", "subject": "涡轮冷却技术", "link": "https://www.bing.com/search?q=ANSYS%20Fluent%20film%20cooling%20hole%20tutorial", "video": "", "duration": null, "note": "选做，建议放在周日机动日。照着教程建一个平板单斜孔模型，算吹风比 M=0.5/1.0/1.5 三种工况，提取壁面绝热气膜效率沿流向分布。没有条件就用 M04-2 的实验数据代替。", "status": "processed"}, {"id": "recvuaSskyUi9I", "title": "【自编练习】冷却效率与气膜效率计算题", "fingerprint": "M04-6", "form": "练习", "subject": "涡轮冷却技术", "link": "http://（自编练习/自建工具，内容见提交说明）", "video": "", "duration": null, "note": "题目：① 推导 η=(Tg-Tm)/(Tg-Tc)，说明 Tg/Tm/Tc 物理含义；② Tg=1700K、Tc=800K、Tm=1200K，求所需冷却效率；③ 用 Bi 数判断某叶片能否按等温体处理；④ 内部对流 η=0.45、气膜 η_f=0.35，估算复合冷却综合效率。", "status": "processed"}, {"id": "recvuaSskya24X", "title": "【书籍】Rolls-Royce《The Jet Engine》第8章 Lubrication", "fingerprint": "M05-1", "form": "书籍", "subject": "滑油系统", "link": "https://book.douban.com/subject_search?search_text=The%20Jet%20Engine%20lubrication%20system%20chapter%208", "video": "", "duration": null, "note": "看滑油系统完整回路图：油箱—供油泵—滤—轴承腔—回油泵—换热器—回油箱。记住每个附件的布置位置和作用。", "status": "processed"}, {"id": "recvuaSskysyQJ", "title": "【论文】林基恕 等：航空发动机滑油系统热分析（航空动力学报）", "fingerprint": "M05-2", "form": "论文", "subject": "滑油系统", "link": "https://xueshu.baidu.com/s?wd=%E8%88%AA%E7%A9%BA%E5%8F%91%E5%8A%A8%E6%9C%BA%E6%BB%91%E6%B2%B9%E7%B3%BB%E7%BB%9F%E7%83%AD%E5%88%86%E6%9E%90%20%E8%88%AA%E7%A9%BA%E5%8A%A8%E5%8A%9B%E5%AD%A6%E6%8A%A5", "video": "", "duration": null, "note": "中文文献，直接给出滑油系统热平衡建模方法与工程数据。重点摘录：轴承发热估算、供回油温度控制范围、ACOC/FCOC 匹配原则。", "status": "processed"}, {"id": "recvuaSsky0k1W", "title": "【论文】Flouros M. Correlations for Heat Generation in Aero Engine Bearings (ASME GT2006)", "fingerprint": "M05-3", "form": "论文", "subject": "滑油系统", "link": "https://www.semanticscholar.org/search?q=Correlations%20for%20Heat%20Generation%20in%20Aero%20Engine%20Bearings%20Flouros", "video": "", "duration": null, "note": "轴承发热量的权威关联式（SKF 模型、Palmgren 公式出处）。把公式和适用条件录入工具库，后面算热平衡直接用。", "status": "processed"}, {"id": "recvuaSsky69hL", "title": "【标准】SAE AIR 5020 滑油系统设计指南", "fingerprint": "M05-4", "form": "标准", "subject": "滑油系统", "link": "https://www.sae.org/standards?search=SAE%20AIR%205020%20lubrication%20system%20design", "video": "", "duration": null, "note": "工程标准，规定了滑油系统设计的边界条件与验证要求。周末翻阅，重点看温度限制、流量裕度、除气要求三节。", "status": "processed"}, {"id": "recvuaSsky2QRM", "title": "【软件】MATLAB/Simulink 滑油回路热平衡模型", "fingerprint": "M05-5", "form": "软件", "subject": "滑油系统", "link": "https://www.bing.com/search?q=Simulink%20lubrication%20system%20thermal%20model", "video": "", "duration": null, "note": "建模：轴承+齿轮发热作为源项 → 滑油流量带走热量 → ACOC/FCOC 两个散热支路 → 求解供回油温度。用第5周第4天的计算题做算例验证。", "status": "processed"}, {"id": "recvuaSskyuArr", "title": "【自编练习】滑油系统热平衡与 ACOC 设计计算题", "fingerprint": "M05-6", "form": "练习", "subject": "滑油系统", "link": "http://（自编练习/自建工具，内容见提交说明）", "video": "", "duration": null, "note": "题目：① 轴承摩擦功耗 5kW、滑油流量 30L/min，求滑油温升（取 cp≈2.0 kJ/(kg·K)、ρ≈850 kg/m³）；② ACOC 设计：滑油侧 30L/min，440K→370K，空气侧 0.5kg/s、300K，求换热量与空气出口温度；③ 按散热需求与润滑需求分别算滑油流量并取大值；④ 说明除气必要性。", "status": "processed"}, {"id": "recvuaSskyPiYg", "title": "【论文】张鹏 等：航空发动机燃油热管理系统研究进展（推进技术）", "fingerprint": "M06-1", "form": "论文", "subject": "燃油系统热管理", "link": "https://xueshu.baidu.com/s?wd=%E8%88%AA%E7%A9%BA%E5%8F%91%E5%8A%A8%E6%9C%BA%E7%87%83%E6%B2%B9%E7%83%AD%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F%E7%A0%94%E7%A9%B6%E8%BF%9B%E5%B1%95%20%E6%8E%A8%E8%BF%9B%E6%8A%80%E6%9C%AF", "video": "", "duration": null, "note": "中文综述，先读它建立框架：燃油热沉能力、系统拓扑、热沉匹配方法、国内外研究现状。读完再读英文论文。", "status": "processed"}, {"id": "recvuaSskygPBD", "title": "【论文】Dooley M. et al. Fuel Thermal Management Systems for High Performance Aircraft (AIAA)", "fingerprint": "M06-2", "form": "论文", "subject": "燃油系统热管理", "link": "https://www.semanticscholar.org/search?q=Fuel%20Thermal%20Management%20Systems%20for%20High%20Performance%20Aircraft", "video": "", "duration": null, "note": "高性能飞机燃油热管理的经典论文。重点：热沉不足的处理策略、回油循环方案、与空气/滑油系统的耦合方式。", "status": "processed"}, {"id": "recvuaSskyMtuk", "title": "【标准】MIL-DTL-5624 航空燃油规范（热氧化安定性要求）", "fingerprint": "M06-3", "form": "标准", "subject": "燃油系统热管理", "link": "https://www.sae.org/standards?search=MIL-DTL-5624%20turbine%20fuel%20specification", "video": "", "duration": null, "note": "查热氧化安定性（JFTOT）指标与温度限制，这是燃油侧温度上限（约 420-430K）的标准依据。摘录关键条款入库。", "status": "processed"}, {"id": "recvuaSskyE7jd", "title": "【软件】Excel/MATLAB 热沉匹配计算表", "fingerprint": "M06-4", "form": "软件", "subject": "燃油系统热管理", "link": "http://（自编练习/自建工具，内容见提交说明）", "video": "", "duration": null, "note": "自建：需求侧（滑油散热 + 飞机系统散热 + 其他）vs 供给侧（ṁ_fuel·cp·(T_limit-T_tank)），做成可切换工况（起飞/巡航/慢车/超声速）的计算表，直接判断热沉是否够用。", "status": "processed"}, {"id": "recvuaSskyEiBV", "title": "【自编练习】燃油热沉能力与结焦分析计算题", "fingerprint": "M06-5", "form": "练习", "subject": "燃油系统热管理", "link": "http://（自编练习/自建工具，内容见提交说明）", "video": "", "duration": null, "note": "题目：① 燃油流量 0.3kg/s、cp=2.0 kJ/(kg·K)、油箱 288K、喷前限温 430K，求热沉能力；② 分析高空巡航时热沉为何可能不足；③ 画出燃油温度沿飞行剖面的变化草图并标出结焦风险区；④ 比较回油循环与增大 ACOC 两种方案。", "status": "processed"}, {"id": "recvuaSskyRI93", "title": "【论文】燃油结焦与热氧化安定性研究综述（检索入口）", "fingerprint": "M06-6", "form": "论文", "subject": "燃油系统热管理", "link": "https://xueshu.baidu.com/s?wd=%E8%88%AA%E7%A9%BA%E7%87%83%E6%B2%B9%20%E7%83%AD%E6%B0%A7%E5%8C%96%20%E7%BB%93%E7%84%A6%20%E9%AB%98%E6%B8%A9%20%E6%B2%89%E7%A7%AF", "video": "", "duration": null, "note": "检索近 5 年文献，挑 2 篇精读：一篇讲结焦机理与温度阈值，一篇讲抑制措施（脱氧、添加剂、表面处理）。", "status": "processed"}, {"id": "recvuaSskyqaQn", "title": "【论文】郭晓宇 等：航空发动机热管理系统建模与仿真（航空动力学报）", "fingerprint": "M07-1", "form": "论文", "subject": "多系统热平衡与优化", "link": "https://xueshu.baidu.com/s?wd=%E8%88%AA%E7%A9%BA%E5%8F%91%E5%8A%A8%E6%9C%BA%E7%83%AD%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F%E5%BB%BA%E6%A8%A1%E4%B8%8E%E4%BB%BF%E7%9C%9F", "video": "", "duration": null, "note": "整周核心参考文献。照着它的建模思路搭你自己的整机热管理模型：子系统能量方程 → 耦合边界 → 迭代求解 → 工况扫描。", "status": "processed"}, {"id": "recvuaSskyzrtk", "title": "【论文】McCarthy K. et al. Integrated Thermal Management of Aircraft (AIAA)", "fingerprint": "M07-2", "form": "论文", "subject": "多系统热平衡与优化", "link": "https://www.semanticscholar.org/search?q=Integrated%20Thermal%20Management%20of%20Aircraft%20AIAA", "video": "", "duration": null, "note": "飞机层面（不只是发动机）的综合热管理视角：热沉统筹、系统级权衡、未来架构。用来拓宽视野。", "status": "processed"}, {"id": "recvuaSsky3hDZ", "title": "【标准】SAE AIR 1168/5 Aerospace Thermal Management", "fingerprint": "M07-3", "form": "标准", "subject": "多系统热平衡与优化", "link": "https://www.sae.org/standards?search=SAE%20AIR%201168%20aerospace%20thermal%20management", "video": "", "duration": null, "note": "航空航天热管理标准，提供术语、设计流程与验证方法。周末翻阅，重点对照自己模型的假设是否合理。", "status": "processed"}, {"id": "recvuaSskyvWk9", "title": "【软件】GT-SUITE / Flowmaster 航空热管理案例教程", "fingerprint": "M07-4", "form": "软件", "subject": "多系统热平衡与优化", "link": "https://www.bing.com/search?q=GT-SUITE%20aircraft%20thermal%20management%20tutorial", "video": "", "duration": null, "note": "系统级仿真工具的官方案例。照着搭一个含二次空气、滑油、燃油三条回路的耦合模型；没有 license 就用手写 Python/Excel 迭代求解代替，物理是一样的。", "status": "processed"}, {"id": "recvuaSskynFxp", "title": "【视频】YouTube：Aircraft Thermal Management System 讲解", "fingerprint": "M07-5", "form": "视频", "subject": "多系统热平衡与优化", "link": "https://www.youtube.com/results?search_query=Aircraft%20thermal%20management%20system%20overview", "video": "https://www.youtube.com/results?search_query=Aircraft%20thermal%20management%20system%20overview", "duration": null, "note": "补充材料，看工程上热管理系统的实际布局与控制逻辑。", "status": "processed"}, {"id": "recvuaSskyArBS", "title": "【自编练习】整机热平衡与敏感性分析练习", "fingerprint": "M07-6", "form": "练习", "subject": "多系统热平衡与优化", "link": "http://（自编练习/自建工具，内容见提交说明）", "video": "", "duration": null, "note": "题目：① 画整机热管理耦合框图，标出所有换热路径；② 引气量增加 5%，分析对滑油温度、燃油温度、推力的连锁影响；③ 设计控制逻辑：滑油温度超过 440K 时如何调节（旁通阀/引气/回油）；④ 起飞与巡航两工况热平衡对比。", "status": "processed"}, {"id": "recvuaSskyTtQJ", "title": "【论文】Bunker R.S. Evolution of Turbine Cooling (ASME GT2017)", "fingerprint": "M08-1", "form": "论文", "subject": "前沿技术与综合案例", "link": "https://www.semanticscholar.org/search?q=Evolution%20of%20Turbine%20Cooling%20Bunker%20ASME%20GT2017", "video": "", "duration": null, "note": "冷却技术演进全景，从内部对流到双层壁、微通道、增材制造。第8周开篇读，用来定位前沿方向。", "status": "processed"}, {"id": "recvuaSskyoXPJ", "title": "【论文】陶智 等：航空发动机热端部件冷却技术研究进展（航空学报）", "fingerprint": "M08-2", "form": "论文", "subject": "前沿技术与综合案例", "link": "https://xueshu.baidu.com/s?wd=%E8%88%AA%E7%A9%BA%E5%8F%91%E5%8A%A8%E6%9C%BA%E7%83%AD%E7%AB%AF%E9%83%A8%E4%BB%B6%E5%86%B7%E5%8D%B4%E6%8A%80%E6%9C%AF%E7%A0%94%E7%A9%B6%E8%BF%9B%E5%B1%95%20%E9%99%B6%E6%99%BA", "video": "", "duration": null, "note": "国内团队权威综述，中文好读。重点：双层壁冷却、发汗冷却、CMC 与冷却结构的结合。", "status": "processed"}, {"id": "recvuaSsky7gRo", "title": "【论文】张靖周 等：航空发动机热管理系统研究综述（推进技术）", "fingerprint": "M08-3", "form": "论文", "subject": "前沿技术与综合案例", "link": "https://xueshu.baidu.com/s?wd=%E8%88%AA%E7%A9%BA%E5%8F%91%E5%8A%A8%E6%9C%BA%E7%83%AD%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F%E7%A0%94%E7%A9%B6%E7%BB%BC%E8%BF%B0%20%E5%BC%A0%E9%9D%96%E5%91%A8", "video": "", "duration": null, "note": "系统层面的中文综述，适合作为综合案例（尤其是案例B综述写作）的骨架参考。", "status": "processed"}, {"id": "recvuaSskycPTW", "title": "【检索入口】ASME Turbo Expo 近 5 年热管理相关论文", "fingerprint": "M08-4", "form": "论文", "subject": "前沿技术与综合案例", "link": "https://www.semanticscholar.org/search?q=ASME%20Turbo%20Expo%20thermal%20management%20gas%20turbine", "video": "", "duration": null, "note": "在 ASME Digital Collection 或 Google Scholar 按此关键词检索近 5 年（GT2021-GT2026）论文，筛出 10 篇精读，用于案例B的文献综述。", "status": "processed"}, {"id": "recvuaSskyXxGX", "title": "【自编练习】综合案例A：某涡扇发动机热管理系统设计", "fingerprint": "M08-5", "form": "练习", "subject": "前沿技术与综合案例", "link": "http://（自编练习/自建工具，内容见提交说明）", "video": "", "duration": null, "note": "已知：起飞推力 120kN、涵道比 8、涡轮入口温度 1800K。要求：① 设计二次空气分配方案（涡轮冷却/封严/间隙控制占比与各支路流量）；② 设计滑油散热回路（ACOC+FCOC 匹配、供回油温度校核）；③ 做燃油热沉匹配（多工况）；④ 输出方案报告 + 仿真模型。交付物：报告 + 计算表/模型。", "status": "processed"}, {"id": "recvuaSsky4NhD", "title": "【自编练习】综合案例B：热管理技术文献综述", "fingerprint": "M08-6", "form": "练习", "subject": "前沿技术与综合案例", "link": "http://（自编练习/自建工具，内容见提交说明）", "video": "", "duration": null, "note": "任务：精读近 5 年 ASME GT 会议热管理相关论文 10 篇，撰写 3000 字综述《航空发动机热管理技术现状与趋势》。要求：按技术方向分类（冷却结构/换热器/智能热管理/新工质/混电推进），每类给出代表性方法与关键数据，末尾给出自己的判断。", "status": "processed"}, {"id": "recvuaSskyhrxv", "title": "【工具】计算环境准备：Python(numpy/matplotlib) 或 MATLAB", "fingerprint": "M00-1", "form": "工具", "subject": "工具与仿真", "link": "https://www.bing.com/search?q=python%20numpy%20matplotlib%20heat%20transfer%20calculation", "video": "", "duration": null, "note": "第1周开工前先把环境搭好。后面热阻网络、换热器、热平衡、热沉匹配全部靠它。不会 Python 就用 MATLAB 或 Excel，能出数就行。", "status": "processed"}, {"id": "recvuaSskz7ZVg", "title": "【工具】专业仿真软件获取路径（Fluent / GT-SUITE / AMESim / Flowmaster）", "fingerprint": "M00-2", "form": "工具", "subject": "工具与仿真", "link": "https://www.bing.com/search?q=ANSYS%20Fluent%20GT-SUITE%20AMESim%20Flowmaster%20academic%20license", "video": "", "duration": null, "note": "列出可获得渠道：学校/单位 license、厂商学术版、试用版。优先级：Flowmaster/GT-SUITE（系统级，第3、7周用）> Fluent（部件级，第4周选做）。没有条件时全部可用 Excel/Python 迭代替代，不影响主线学习。", "status": "processed"}, {"id": "recvudhHnu8h7M", "title": "【视频】中国大学MOOC：传热学 国家精品课（西安交大/清华）", "fingerprint": "M01-7", "form": "视频", "subject": "基础理论", "link": "https://www.icourse163.org/search.htm?search=%E4%BC%A0%E7%83%AD%E5%AD%A6", "video": "https://www.icourse163.org/search.htm?search=%E4%BC%A0%E7%83%AD%E5%AD%A6", "duration": null, "note": "系统视频课，适合教材啃不动时换脑子。按章节看，重点看导热与对流换热两部分。看完回来做第1周习题。", "status": "processed"}, {"id": "recvudhHnucUfI", "title": "【视频】航空发动机工作原理 3D 动画拆解（YouTube）", "fingerprint": "M02-7", "form": "视频", "subject": "总体热环境", "link": "https://www.youtube.com/results?search_query=How%20a%20jet%20engine%20works%203D%20animation", "video": "https://www.youtube.com/results?search_query=How%20a%20jet%20engine%20works%203D%20animation", "duration": null, "note": "先用动画建立整机空间感：风扇、压气机、燃烧室、涡轮、尾喷管怎么串起来，气怎么走。看20分钟胜过读两小时文字。", "status": "processed"}, {"id": "recvudhHnulsYc", "title": "【视频】涡轮叶片内部冷却通道 3D 透视动画（YouTube）", "fingerprint": "M04-7", "form": "视频", "subject": "涡轮冷却技术", "link": "https://www.youtube.com/results?search_query=turbine%20blade%20internal%20cooling%20passage%20animation", "video": "https://www.youtube.com/results?search_query=turbine%20blade%20internal%20cooling%20passage%20animation", "duration": 12.0, "note": "看内部蛇形通道、扰流柱、尾缘劈缝、气膜孔的空间关系。第4周读教材前先看这个，抽象结构立刻具象化。", "status": "processed"}, {"id": "recvudhHnuznlM", "title": "【视频】航空发动机滑油系统 工作原理与回路动画（B站/YouTube）", "fingerprint": "M05-7", "form": "视频", "subject": "滑油系统", "link": "https://search.bilibili.com/all?keyword=%E8%88%AA%E7%A9%BA%E5%8F%91%E5%8A%A8%E6%9C%BA%20%E6%BB%91%E6%B2%B9%E7%B3%BB%E7%BB%9F%20%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86", "video": "https://search.bilibili.com/all?keyword=%E8%88%AA%E7%A9%BA%E5%8F%91%E5%8A%A8%E6%9C%BA%20%E6%BB%91%E6%B2%B9%E7%B3%BB%E7%BB%9F%20%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86", "duration": 15.0, "note": "看供油-轴承腔-回油-换热-除气的完整回路动画。第5周配合 The Jet Engine 第8章一起看。", "status": "processed"}, {"id": "recvudhHnu4HMi", "title": "【视频】飞机燃油系统与热管理 讲解视频（YouTube/B站）", "fingerprint": "M06-7", "form": "视频", "subject": "燃油系统热管理", "link": "https://www.youtube.com/results?search_query=aircraft%20fuel%20system%20thermal%20management%20explained", "video": "https://www.youtube.com/results?search_query=aircraft%20fuel%20system%20thermal%20management%20explained", "duration": 18.0, "note": "先看燃油系统构成（油箱、增压泵、燃油-滑油换热器、喷嘴），再理解为什么燃油是发动机的最终热沉。", "status": "processed"}, {"id": "recvudhHnuBJQC", "title": "【工具】视频资料存放与上传指引（自述）", "fingerprint": "M00-3", "form": "工具", "subject": "工具与仿真", "link": "http://（见提交说明）", "video": "", "duration": null, "note": "三种存法，按大小选：① 几十 MB 以内的短视频：直接拖到资料记录的「附件/视频文件」字段，飞书内可直接播放；② 大视频/自己录的课：上传到飞书云盘 → 右键分享 → 复制链接 → 粘贴到本表的「视频链接」字段，手机端点开即播；③ 外部平台（B站/YouTube/MOOC）：直接把链接填进「视频链接」。统一原则：大文件一律不进表格附件，只存链接，避免表格变卡。看完记得在「时长(分钟)」填时长，方便排每日任务。", "status": "processed"}]};
+
+const API_BASE='https://1483887786-cd9ayeq1pb.ap-guangzhou.tencentscf.com';
+/* ---------- helpers ---------- */
+const $ = (s,r=document)=>r.querySelector(s);
+const el = (t,c,h)=>{const e=document.createElement(t);if(c)e.className=c;if(h!=null)e.innerHTML=h;return e;};
+const esc = s=>((s==null)?'':String(s)).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const dateOf = s=> (s||'').slice(0,10);
+const todayStr = ()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');};
+const STATUS = ['未开始','进行中','已完成'];
+const FORMCLASS = {'视频':'video','书籍':'book','论文':'paper','工具':'tool','标准':'standard','软件':'software','练习':'exercise'};
+const FORMLABEL = {'视频':'🎬','书籍':'📕','论文':'📄','工具':'🛠️','标准':'📐','软件':'💻','练习':'✍️'};
+
+/* local check-in overrides (snapshot mode, stored on device only) */
+const LS_KEY='aero_checkin_v1';
+let overrides={};
+try{overrides=JSON.parse(localStorage.getItem(LS_KEY)||'{}');}catch(e){}
+function statusOf(t){return overrides[t.id]||t.status||'未开始';}
+function setStatus(t,s){
+  if(ONLINE){
+    fetch(API_BASE+'/api/status',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({record_id:t.id,status:s})})
+      .then(r=>r.json()).then(j=>{
+        if(j && j.ok){ t.status=s; delete overrides[t.id];
+          localStorage.setItem(LS_KEY,JSON.stringify(overrides)); render(); }
+        else { alert('写回飞书失败：'+((j&&(j.error||j.detail))||'未知错误')); }
+      })
+      .catch(()=>{ overrides[t.id]=s; localStorage.setItem(LS_KEY,JSON.stringify(overrides)); render(); });
+    return;
+  }
+  overrides[t.id]=s; localStorage.setItem(LS_KEY,JSON.stringify(overrides)); render();
+}
+
+let SNAPSHOT = DATA;
+let ONLINE = false;
+let TASKS=[], WEEKS=[], MATS=[], weekByNo={};
+
+function applyData(d){
+  TASKS = d.tasks||[]; WEEKS = d.weeks||[]; MATS = d.materials||[];
+  weekByNo={}; WEEKS.forEach(w=>weekByNo[w.week]=w);
+  const b=document.getElementById('syncbadge');
+  if(b){ b.textContent = ONLINE? '● 已连接飞书（改动实时同步）' : '○ 离线快照（只读）';
+         b.style.color = ONLINE? 'var(--green)' : 'var(--mut)'; }
+}
+
+async function loadFromBackend(){
+  try{
+    const r = await fetch(API_BASE+'/api/data', {cache:'no-store'});
+    if(!r.ok) throw new Error('http '+r.status);
+    const d = await r.json();
+    if(!d.tasks) throw new Error('bad payload');
+    ONLINE=true; applyData(d);
+  }catch(e){
+    ONLINE=false; applyData(SNAPSHOT);
+  }
+  render();
+}
+
+function render(){ goTab(curTab); }
+
+/* ---------- views ---------- */
+function viewHome(){
+  const done = TASKS.filter(t=>statusOf(t)==='已完成').length;
+  const total = TASKS.length;
+  const pct = total? Math.round(done/total*100):0;
+  const videoCnt = MATS.filter(m=>m.form==='视频').length;
+  const tdy = todayStr();
+  const todayTasks = TASKS.filter(t=>dateOf(t.date)===tdy);
+  const nextT = TASKS.map(t=>({t,d:dateOf(t.date)})).filter(x=>x.d>=tdy).sort((a,b)=>a.d<b.d?-1:1)[0];
+  const curWeek = nextT? nextT.t.week : (todayTasks[0]?todayTasks[0].week:'');
+
+  let h='';
+  h+=`<div class="card row between">
+    <div><div class="sm sub2">总体进度</div><div class="tiny muted">${done}/${total} 任务完成</div></div>
+    <div class="ring">
+      <svg width="120" height="120">
+        <circle cx="60" cy="60" r="52" fill="none" stroke="#0e1626" stroke-width="12"/>
+        <circle cx="60" cy="60" r="52" fill="none" stroke="url(#g)" stroke-width="12" stroke-linecap="round"
+          stroke-dasharray="${(2*Math.PI*52).toFixed(1)}" stroke-dashoffset="${(2*Math.PI*52*(1-pct/100)).toFixed(1)}"/>
+        <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3b82f6"/><stop offset="1" stop-color="#f97316"/></linearGradient></defs>
+      </svg>
+      <div class="pct"><div class="lg">${pct}%</div><div class="tiny muted">完成度</div></div>
+    </div>
+  </div>`;
+
+  h+=`<div class="grid2">
+    <div class="stat"><div class="n" style="color:var(--blue)">${total}</div><div class="l">学习任务</div></div>
+    <div class="stat"><div class="n" style="color:var(--orange)">${MATS.length}</div><div class="l">资料总数</div></div>
+    <div class="stat"><div class="n" style="color:var(--green)">${videoCnt}</div><div class="l">视频资料</div></div>
+    <div class="stat"><div class="n" style="color:var(--purple)">${WEEKS.length}</div><div class="l">学习周次</div></div>
+  </div>`;
+
+  if(curWeek && weekByNo[curWeek]){
+    const w=weekByNo[curWeek];
+    h+=`<div class="card tap" onclick="goTab('weeks')"><div class="row between"><div class="md">${esc(w.week)} · ${esc(w.theme)}</div><span class="tag">${esc(w.period||'')}</span></div>
+      <div class="sm sub2" style="margin-top:7px">${esc((w.goal||'').slice(0,42))}${(w.goal||'').length>42?'…':''}</div></div>`;
+  }
+
+  // this week mini progress
+  const wkTasks = TASKS.filter(t=>t.week===curWeek);
+  if(wkTasks.length){
+    const wdone=wkTasks.filter(t=>statusOf(t)==='已完成').length;
+    const wp=Math.round(wdone/wkTasks.length*100);
+    h+=`<div class="card"><div class="row between"><div class="sm">本周任务</div><div class="tiny muted">${wdone}/${wkTasks.length}</div></div>
+      <div class="barmini"><i style="width:${wp}%"></i></div></div>`;
+  }
+
+  h+=`<div class="sec-title"><span class="bar"></span>今日 / 最近</div>`;
+  if(todayTasks.length){
+    todayTasks.forEach(t=>h+=taskCard(t,false));
+  }else if(nextT){
+    h+=`<div class="card"><div class="tiny muted">今天（${tdy}）暂无安排 · 周期从 2026-09-07 开始</div></div>`;
+    h+=`<div class="tiny sub2" style="margin:0 2px 6px">下一个学习任务（${nextT.d}）</div>`;
+    h+=taskCard(nextT.t,false);
+  }else{
+    h+=`<div class="empty">暂无任务数据</div>`;
+  }
+  $('#view').innerHTML=h;
+}
+
+function taskCard(t,showWeek){
+  const st=statusOf(t);
+  const dotColor = st==='已完成'?'var(--green)':st==='进行中'?'var(--amber)':'var(--mut)';
+  const mats = t.materials||[];
+  let mt='';
+  if(showWeek && t.theme) mt+=`<span class="tag" style="margin-right:6px">${esc(t.week)} ${esc(t.theme)}</span>`;
+  mt+=`<span class="tag">${esc(t.type||'学习')}</span>`;
+  if(mats.length) mt+=`<span class="tag">📎 ${mats.length} 资料</span>`;
+  let h=`<div class="card tap" onclick="openTask('${t.id}')">
+    <div class="row between">
+      <div class="md" style="flex:1;margin-right:8px">${esc(t.desc||'未命名任务')}</div>
+      <span class="dot" style="background:${dotColor}"></span>
+    </div>
+    <div style="margin-top:8px">${mt}</div>
+    ${t.estMin?`<div class="tiny muted" style="margin-top:6px">⏱ 预计 ${t.estMin} 分钟 · ${esc(dateOf(t.date))}</div>`:`<div class="tiny muted" style="margin-top:6px">${esc(dateOf(t.date))}</div>`}
+  </div>`;
+  return h;
+}
+
+function openTask(id){
+  const t=TASKS.find(x=>x.id===id); if(!t)return;
+  const st=statusOf(t);
+  let mats='';
+  (t.materials||[]).forEach(m=>{
+    const ic=FORMLABEL[m.form]||'📎';
+    const link = m.video? m.video : (m.link||'');
+    let btn = link? `<a class="btn" href="${esc(link)}" target="_blank" rel="noopener">打开</a>`:'';
+    mats+=`<div class="material"><div class="ic">${ic}</div><div style="flex:1;min-width:0">
+      <div class="sm">${esc(m.title||m.fingerprint||'资料')}</div>
+      <div class="tiny muted">${esc(m.form||'')} ${m.duration?('· '+m.duration+'分钟'):''} ${m.subject?('· '+m.subject):''}</div>
+      ${m.note?`<div class="tiny sub2" style="margin-top:3px">${esc(m.note)}</div>`:''}
+      <div class="links">${btn}</div>
+    </div></div>`;
+  });
+  const statusBtns = STATUS.map(s=>`<button class="btn ${s===st?'':''}" onclick="setStatusById('${t.id}','${s}')" style="${s===st?'background:var(--green)':''}">${s}</button>`).join(' ');
+  const h=`<div class="card">
+    <div class="row between"><div class="md">${esc(t.desc||'任务')}</div><button class="btn out" onclick="goTab('tasks')">← 返回</button></div>
+    <div style="margin:8px 0">${t.week?`<span class="tag">${esc(t.week)} ${esc(t.theme)}</span> `:''}<span class="tag">${esc(t.type||'学习')}</span> ${t.estMin?`<span class="tag">⏱ ${t.estMin}分</span>`:''}</div>
+    ${t.output?`<div class="detail"><div class="k">输出物</div>${esc(t.output)}</div>`:''}
+    ${t.note?`<div class="detail"><div class="k">备注</div>${esc(t.note)}</div>`:''}
+    <div class="detail"><div class="k">当前状态：${esc(st)}</div><div style="display:flex;gap:8px;margin-top:4px">${statusBtns}</div>
+      <div class="tiny muted" style="margin-top:6px">打卡仅保存在本设备（快照版）；接入飞书后自动同步。</div></div>
+    <div class="detail"><div class="k">关联资料（${t.materials?t.materials.length:0}）</div>${mats||'<div class="tiny muted">无</div>'}</div>
+  </div>`;
+  $('#view').innerHTML=h;
+}
+function setStatusById(id,s){setStatus(TASKS.find(x=>x.id===id),s);}
+
+function viewToday(){
+  let sel = todayStr();
+  let h=`<div class="datebar"><div class="sm sub2">选择日期查看当日任务</div>
+    <input type="date" id="dtpick" value="${sel}" onchange="renderToday(this.value)"></div>`;
+  h+=`<div id="todayBody"></div>`;
+  $('#view').innerHTML=h;
+  renderToday(sel);
+}
+function renderToday(d){
+  const list=TASKS.filter(t=>dateOf(t.date)===d);
+  let h='';
+  if(!list.length){
+    const nx=TASKS.map(t=>({t,dd:dateOf(t.date)})).filter(x=>x.dd>=d).sort((a,b)=>a.dd<b.dd?-1:1)[0];
+    h+=`<div class="card"><div class="tiny muted">${d} 没有安排任务。</div></div>`;
+    if(nx){h+=`<div class="tiny sub2" style="margin:0 2px 6px">最近任务（${nx.dd}）</div>`;h+=taskCard(nx.t,true);}
+    else h+=`<div class="empty">没有更多任务</div>`;
+  }else{
+    list.forEach(t=>h+=taskCard(t,true));
+  }
+  const b=$('#todayBody'); if(b)b.innerHTML=h;
+}
+
+function viewTasks(){
+  let h=`<div class="seg" id="seg">
+    <button class="on" onclick="renderKanban('all',this)">全部</button>
+    <button onclick="renderKanban('未开始',this)">未开始</button>
+    <button onclick="renderKanban('进行中',this)">进行中</button>
+    <button onclick="renderKanban('已完成',this)">已完成</button>
+  </div><div id="kanban"></div>`;
+  $('#view').innerHTML=h;
+  renderKanban('all',$('#seg').firstChild);
+}
+function renderKanban(filter,btn){
+  if(btn){[...btn.parentNode.children].forEach(b=>b.classList.remove('on'));btn.classList.add('on');}
+  const cols=[['未开始','var(--mut)'],['进行中','var(--amber)'],['已完成','var(--green)']];
+  let h='<div class="kanban">';
+  cols.forEach(([s,c])=>{
+    const items=TASKS.filter(t=>statusOf(t)===s && (filter==='all'||statusOf(t)===filter));
+    h+=`<div class="kcol"><h4><span class="dot" style="background:${c};margin-right:5px"></span>${s} (${items.length})</h4>`;
+    items.forEach(t=>{
+      h+=`<div class="kitem" onclick="openTask('${t.id}')">${esc(t.desc||'任务')}<div class="d">${esc(dateOf(t.date))} · ${esc(t.week)}</div></div>`;
+    });
+    h+=`</div>`;
+  });
+  h+='</div>';
+  $('#kanban').innerHTML=h;
+}
+
+let libFilter='全部';
+function viewLibrary(){
+  const forms=['全部',...Array.from(new Set(MATS.map(m=>m.form).filter(Boolean)))];
+  let h=`<div class="chips" id="libchips">`+forms.map(f=>`<div class="chip ${f===libFilter?'on':''}" onclick="libFilter='${f}';viewLibrary()">${f}</div>`).join('')+`</div><div id="liblist"></div>`;
+  $('#view').innerHTML=h;
+  renderLib();
+}
+function renderLib(){
+  [...$('#libchips').children].forEach(c=>c.classList.toggle('on',c.textContent===libFilter));
+  let list=MATS.slice();
+  if(libFilter!=='全部') list=list.filter(m=>m.form===libFilter);
+  list.sort((a,b)=>(a.week||'').localeCompare(b.week||'')|| (a.fingerprint||'').localeCompare(b.fingerprint||''));
+  if(!list.length){$('#liblist').innerHTML='<div class="empty">该分类暂无资料</div>';return;}
+  let h='';
+  list.forEach(m=>{
+    const ic=FORMLABEL[m.form]||'📎';
+    const cls=FORMCLASS[m.form]||'';
+    const link=m.video||m.link||'';
+    const btn=link?`<a class="btn" href="${esc(link)}" target="_blank" rel="noopener">打开</a>`:'';
+    h+=`<div class="card">
+      <div class="row between"><div class="md" style="flex:1;margin-right:8px">${esc(m.title||m.fingerprint||'资料')}</div>
+        <span class="tag ${cls}">${ic} ${esc(m.form||'')}</span></div>
+      <div class="tiny muted" style="margin:6px 0">${m.week?('📅 '+esc(m.week)+' '):''}${m.subject?('· '+esc(m.subject)):''}${m.duration?(' · ⏱'+m.duration+'分'):''}</div>
+      ${m.note?`<div class="tiny sub2">${esc(m.note)}</div>`:''}
+      <div class="links" style="margin-top:8px">${btn}</div>
+    </div>`;
+  });
+  $('#liblist').innerHTML=h;
+}
+
+function viewWeeks(){
+  let h='';
+  WEEKS.forEach(w=>{
+    const wkTasks=TASKS.filter(t=>t.week===w.week);
+    const done=wkTasks.filter(t=>statusOf(t)==='已完成').length;
+    const wp=wkTasks.length?Math.round(done/wkTasks.length*100):0;
+    h+=`<div class="card tap" onclick="openWeek('${w.id}')">
+      <div class="row between"><div class="md">${esc(w.week)} · ${esc(w.theme)}</div><span class="tag">${done}/${wkTasks.length}</span></div>
+      <div class="barmini"><i style="width:${wp}%"></i></div>
+      <div class="tiny muted" style="margin-top:7px">${esc(w.period||'')}</div>
+    </div>`;
+  });
+  $('#view').innerHTML=h;
+}
+function openWeek(id){
+  const w=WEEKS.find(x=>x.id===id); if(!w)return;
+  const f=(k)=> (w[k]?`<div class="detail"><div class="k">${k}</div>${esc(w[k])}</div>`:'');
+  const h=`<div class="card">
+    <div class="row between"><div class="md">${esc(w.week)} · ${esc(w.theme)}</div><button class="btn out" onclick="goTab('weeks')">← 返回</button></div>
+    <div class="tiny muted" style="margin-top:6px">${esc(w.period||'')}</div>
+    ${f('目标')}${f('前置知识')}${f('完成标准')}${f('自测题')}${f('精选资料')}${f('工作练习')}${f('备注')}
+  </div>`;
+  $('#view').innerHTML=h;
+}
+
+/* ---------- router ---------- */
+const TITLES={home:'学习驾驶舱',today:'今日任务',tasks:'任务看板',library:'资料库',weeks:'周计划'};
+let curTab='home';
+function goTab(t){
+  curTab=t;
+  [...$('#tabs').children].forEach(b=>b.classList.toggle('on',b.dataset.tab===t));
+  $('#subline').textContent=TITLES[t]||'';
+  if(t==='home')viewHome();
+  else if(t==='today')viewToday();
+  else if(t==='tasks')viewTasks();
+  else if(t==='library')viewLibrary();
+  else if(t==='weeks')viewWeeks();
+  window.scrollTo(0,0);
+}
+$('#tabs').addEventListener('click',e=>{const b=e.target.closest('button');if(b)goTab(b.dataset.tab);});
+applyData(SNAPSHOT);
+goTab('home');
+loadFromBackend();
+
+/* 原生 App：把 target=_blank 的外部链接（B站/YouTube 等）转用系统浏览器打开 */
+document.addEventListener('click', function(e){
+  var a = e.target.closest && e.target.closest('a[target="_blank"]');
+  if(a && a.href){
+    e.preventDefault();
+    if(window.AndroidBridge){ AndroidBridge.openExternal(a.href); }
+    else { window.open(a.href,'_blank'); }
+  }
+});
+</script>
+</body>
+</html>
